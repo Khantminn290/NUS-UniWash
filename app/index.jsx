@@ -10,7 +10,7 @@ const Home  = () => {
       <Image source={require('../assets/crumpled-green-paper-texture.jpg')} style= {{width: 300, height: 200, marginBottom: 30}} resizeMode='cover'/>
       <Text style={styles.title}>Home</Text>
       <Text style= {{marginTop: 30, marginBottom: 30}}>Login page</Text>
-      <Link href= "/about">About Page!!!!</Link>
+      <Link href= "/about">About Page</Link>
     </View>
   )
 }
