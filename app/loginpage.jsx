@@ -7,7 +7,10 @@ export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
+  const { user } = useUser
+
   const handleSubmit = () => {
+    console.log('current user:', user)
     console.log('login form submitted', email, password)
   }
 
