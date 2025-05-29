@@ -44,7 +44,7 @@ export default function LoginPage() {
             <Text style={styles.buttonText}>Log In</Text>
           </Pressable>
 
-          <View style = {{width: '100%', height: 40}}>
+          <View style = {{width: '100%', height: 60}}>
             {error && <Text style={styles.error}>{error}</Text>}
           </View>
 
@@ -92,9 +92,9 @@ const styles = StyleSheet.create({
     color: '#1e90ff'
   },
   error: {
-    color: '#f8b8be',
+    color: '#4a0000',
     padding: 10,
-    backgroundColor: '#f5c1c8',
+    backgroundColor: '#f8b8be',
     borderColor: '#f38b93',
     borderWidth: 1,
     borderRadius: 6,
