@@ -19,33 +19,33 @@ export default function LoginPage() {
 
   return (
     <UserProvider>
-    <TouchableWithoutFeedback onPress ={Keyboard.dismiss}>
-      <View style={styles.container}>
-        <Text style={styles.title}>Login</Text>
+      <TouchableWithoutFeedback onPress ={Keyboard.dismiss}>
+        <View style={styles.container}>
+          <Text style={styles.title}>Login</Text>
 
-        <TextInput 
-        placeholder="Email" 
-        style={styles.input} 
-        onChangeText={setEmail}
-        value= {email} 
-        />
+          <TextInput 
+          placeholder="Email" 
+          style={styles.input} 
+          onChangeText={setEmail}
+          value= {email} 
+          />
 
-        <TextInput 
-        placeholder="Password"
-        onChangeText={setPassword}
-        value = {password}
-        secureTextEntry style={styles.input}
-        />
+          <TextInput 
+          placeholder="Password"
+          onChangeText={setPassword}
+          value = {password}
+          secureTextEntry style={styles.input}
+          />
 
-        <Pressable style={styles.button} onPress={handleSubmit}>
-          <Text style={styles.buttonText}>Log In</Text>
-        </Pressable>
+          <Pressable style={styles.button} onPress={handleSubmit}>
+            <Text style={styles.buttonText}>Log In</Text>
+          </Pressable>
 
-        <Pressable onPress={() => router.push('/')}>
-          <Text style={styles.back}>← Back to Start</Text>
-        </Pressable>
-      </View>
-    </TouchableWithoutFeedback>
+          <Pressable onPress={() => router.push('/')}>
+            <Text style={styles.back}>← Back to Start</Text>
+          </Pressable>
+        </View>
+      </TouchableWithoutFeedback>
     </UserProvider>
   );
 }
