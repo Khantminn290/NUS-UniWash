@@ -1,13 +1,14 @@
 import { View, Text, TextInput, Pressable, StyleSheet, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
+import { useUser } from '../hooks/useUser';
 
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
-  const { user } = useUser()
+  const { user } = use()
 
   const handleSubmit = () => {
     console.log('current user:', user)
