@@ -5,11 +5,13 @@ import { useState } from 'react';
 export default function SignupPage() {
   const router = useRouter();
 
-   const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [name, setName] = useState('')
+    
   
     const handleSubmit = () => {
-      console.log('register form submitted', email, password)
+      console.log('register form submitted',name, email, password)
     }
   
 
@@ -18,7 +20,12 @@ export default function SignupPage() {
     <View style={styles.container}>
       <Text style={styles.title}>Sign Up</Text>
 
-      <TextInput placeholder="Name" style={styles.input} />
+      <TextInput 
+      placeholder="Name" 
+      style={styles.input}
+      onChangeText={setName}
+      value = {name}
+      />
       <TextInput 
         placeholder="Email" 
         style={styles.input} 
