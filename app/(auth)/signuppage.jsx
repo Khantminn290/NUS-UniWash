@@ -1,6 +1,7 @@
 import { View, Text, TextInput, Pressable, StyleSheet, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
+import { useUser } from '../../hooks/useUser'
 
 export default function SignupPage() {
   const router = useRouter();
@@ -8,11 +9,17 @@ export default function SignupPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
-    
-    const handleSubmit = () => {
-      console.log('register form submitted',name, email, password)
-    }
 
+  const { user, register } = useUser()
+    
+    const handleSubmit = async () => {
+      try {
+        await register(email, password)
+        console.log('current user is: ', user)
+      } catch (error) {
+      
+      }
+    }
   return (
     <TouchableWithoutFeedback onPress = {Keyboard.dismiss}>
       <View style={styles.container}>
