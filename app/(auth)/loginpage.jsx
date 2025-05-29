@@ -1,55 +1,48 @@
-import { View, Text, TextInput, Pressable, StyleSheet, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { View, Text, TextInput, Pressable, StyleSheet, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
+import { useUser } from '../../hooks/useUser';
 
-export default function SignupPage() {
+export default function LoginPage() {
   const router = useRouter();
-
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [name, setName] = useState('')
-    
-  
-    const handleSubmit = () => {
-      console.log('register form submitted',name, email, password)
-    }
-  
 
+  const { user } = useUser();
+
+  const handleSubmit = () => {
+    console.log('current user: ', user);
+    console.log('login form submitted', email, password)
+  }
 
   return (
-    <TouchableWithoutFeedback onPress = {Keyboard.dismiss}>
-      <View style={styles.container}>
-        <Text style={styles.title}>Sign Up</Text>
+      <TouchableWithoutFeedback onPress ={Keyboard.dismiss}>
+        <View style={styles.container}>
+          <Text style={styles.title}>Login</Text>
 
-        <TextInput 
-        placeholder="Name" 
-        style={styles.input}
-        onChangeText={setName}
-        value = {name}
-        />
-        <TextInput 
+          <TextInput 
           placeholder="Email" 
           style={styles.input} 
           onChangeText={setEmail}
           value= {email} 
-        />
-        
-        <TextInput 
+          />
+
+          <TextInput 
           placeholder="Password"
           onChangeText={setPassword}
           value = {password}
           secureTextEntry style={styles.input}
-        />
+          />
 
-        <Pressable style={styles.button} onPress={handleSubmit}>
-          <Text style={styles.buttonText}>Create Account</Text>
-        </Pressable>
+          <Pressable style={styles.button} onPress={handleSubmit}>
+            <Text style={styles.buttonText}>Log In</Text>
+          </Pressable>
 
-        <Pressable onPress={() => router.push('/')}>
-          <Text style={styles.back}>← Back to Start</Text>
-        </Pressable>
-      </View>
-    </TouchableWithoutFeedback>
+          <Pressable onPress={() => router.push('/')}>
+            <Text style={styles.back}>← Back to Start</Text>
+          </Pressable>
+        </View>
+      </TouchableWithoutFeedback>
   );
 }
 
@@ -74,7 +67,7 @@ const styles = StyleSheet.create({
     marginBottom: 16
   },
   button: {
-    backgroundColor: '#00bfff',
+    backgroundColor: '#1e90ff',
     padding: 14,
     borderRadius: 8,
     alignItems: 'center',
@@ -86,6 +79,6 @@ const styles = StyleSheet.create({
   },
   back: {
     textAlign: 'center',
-    color: '#00bfff'
+    color: '#1e90ff'
   }
 });

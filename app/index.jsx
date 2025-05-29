@@ -1,6 +1,5 @@
 import { View, Text, StyleSheet, Pressable, ImageBackground } from 'react-native';
 import { useRouter } from 'expo-router';
-import { UserProvider } from '../context/UserContext';
 
 export default function startpage() {
   const router = useRouter();
