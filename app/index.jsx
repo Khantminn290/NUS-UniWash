@@ -6,7 +6,6 @@ export default function startpage() {
   const router = useRouter();
 
   return (
-    <UserProvider>
       <View style={styles.overlay}>
         <Text style={styles.title}>NUS UniWash</Text>
         <Text style={styles.subtitle}>Smart Laundry for Students</Text>
@@ -19,7 +18,6 @@ export default function startpage() {
           <Text style={styles.buttonText}>Sign Up</Text>
         </Pressable>
       </View>
-    </UserProvider>
   );
 }
 
