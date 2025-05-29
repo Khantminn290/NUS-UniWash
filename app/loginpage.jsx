@@ -30,7 +30,7 @@ export default function LoginPage() {
       secureTextEntry style={styles.input}
       />
 
-      <Pressable style={styles.button}>
+      <Pressable style={styles.button} onPress={handleSubmit}>
         <Text style={styles.buttonText}>Log In</Text>
       </Pressable>
 
