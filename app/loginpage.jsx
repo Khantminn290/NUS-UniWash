@@ -1,15 +1,34 @@
 import { View, Text, TextInput, Pressable, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useState } from 'react';
 
 export default function LoginPage() {
   const router = useRouter();
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+
+  const handleSubmit = () => {
+    console.log('login form submitted', email, password)
+  }
+
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Login</Text>
 
-      <TextInput placeholder="Email" style={styles.input} />
-      <TextInput placeholder="Password" secureTextEntry style={styles.input} />
+      <TextInput 
+      placeholder="Email" 
+      style={styles.input} 
+      onChangeText={setEmail}
+      value= {email} 
+      />
+
+      <TextInput 
+      placeholder="Password"
+      onChangeText={setPassword}
+      value = {password}
+      secureTextEntry style={styles.input}
+      />
 
       <Pressable style={styles.button}>
         <Text style={styles.buttonText}>Log In</Text>
