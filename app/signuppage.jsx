@@ -1,4 +1,4 @@
-import { View, Text, TextInput, Pressable, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Pressable, StyleSheet, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 
@@ -17,37 +17,39 @@ export default function SignupPage() {
 
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Sign Up</Text>
+    <TouchableWithoutFeedback onPress = {Keyboard.dismiss}>
+      <View style={styles.container}>
+        <Text style={styles.title}>Sign Up</Text>
 
-      <TextInput 
-      placeholder="Name" 
-      style={styles.input}
-      onChangeText={setName}
-      value = {name}
-      />
-      <TextInput 
-        placeholder="Email" 
-        style={styles.input} 
-        onChangeText={setEmail}
-        value= {email} 
-      />
-      
-      <TextInput 
-        placeholder="Password"
-        onChangeText={setPassword}
-        value = {password}
-        secureTextEntry style={styles.input}
-      />
+        <TextInput 
+        placeholder="Name" 
+        style={styles.input}
+        onChangeText={setName}
+        value = {name}
+        />
+        <TextInput 
+          placeholder="Email" 
+          style={styles.input} 
+          onChangeText={setEmail}
+          value= {email} 
+        />
+        
+        <TextInput 
+          placeholder="Password"
+          onChangeText={setPassword}
+          value = {password}
+          secureTextEntry style={styles.input}
+        />
 
-      <Pressable style={styles.button} onPress={handleSubmit}>
-        <Text style={styles.buttonText}>Create Account</Text>
-      </Pressable>
+        <Pressable style={styles.button} onPress={handleSubmit}>
+          <Text style={styles.buttonText}>Create Account</Text>
+        </Pressable>
 
-      <Pressable onPress={() => router.push('/')}>
-        <Text style={styles.back}>← Back to Start</Text>
-      </Pressable>
-    </View>
+        <Pressable onPress={() => router.push('/')}>
+          <Text style={styles.back}>← Back to Start</Text>
+        </Pressable>
+      </View>
+    </TouchableWithoutFeedback>
   );
 }
 
