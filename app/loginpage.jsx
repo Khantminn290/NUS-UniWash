@@ -18,7 +18,6 @@ export default function LoginPage() {
 
 
   return (
-    <UserProvider>
       <TouchableWithoutFeedback onPress ={Keyboard.dismiss}>
         <View style={styles.container}>
           <Text style={styles.title}>Login</Text>
@@ -46,7 +45,6 @@ export default function LoginPage() {
           </Pressable>
         </View>
       </TouchableWithoutFeedback>
-    </UserProvider>
   );
 }
 
