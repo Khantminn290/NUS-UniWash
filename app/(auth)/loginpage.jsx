@@ -7,14 +7,17 @@ export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [error, setError] = useState(null)
 
   const { user, login } = useUser();
 
   const handleSubmit = async () => {
+      setError(null)
+
       try {
         await login(email, password)
       } catch (error) {
-      
+        setError(error.message)
       }
     }
 
@@ -40,6 +43,10 @@ export default function LoginPage() {
           <Pressable style={styles.button} onPress={handleSubmit}>
             <Text style={styles.buttonText}>Log In</Text>
           </Pressable>
+
+          <View style = {{width: '100%', height: 40}}>
+            {error && <Text style={styles.error}>{error}</Text>}
+          </View>
 
           <Pressable onPress={() => router.push('/')}>
             <Text style={styles.back}>← Back to Start</Text>
@@ -83,5 +90,14 @@ const styles = StyleSheet.create({
   back: {
     textAlign: 'center',
     color: '#1e90ff'
+  },
+  error: {
+    color: '#f8b8be',
+    padding: 10,
+    backgroundColor: '#f5c1c8',
+    borderColor: '#f38b93',
+    borderWidth: 1,
+    borderRadius: 6,
+    marginHorizontal: 10,
   }
 });
