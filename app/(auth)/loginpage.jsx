@@ -12,7 +12,7 @@ export default function LoginPage() {
   const { user, login } = useUser();
 
   const handleSubmit = async () => {
-      setError(null)
+      setError(null) // to reset the error
 
       try {
         await login(email, password)
