@@ -7,14 +7,14 @@ const profilepage = () => {
 
   if (!user) {
     return (
-      <View style={{ margin: 20 }}>
+      <View style={{ margin: 20, backgroundColor: '#D8BFD8' }}>
         <Text>Loading user...</Text>
       </View>
     )
   }
 
   return (
-    <View style={{ margin: 20 }}>
+    <View style={{ margin: 20, backgroundColor: '#D8BFD8' }}>
       <Text>{user.email}</Text>
       <Button title="Logout" onPress={logout} />
     </View>
