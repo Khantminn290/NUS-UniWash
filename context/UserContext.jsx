@@ -20,13 +20,27 @@ export function UserProvider({ children }) {
     }
 
     async function register(email, password) {
-        try {
-          await account.create(ID.unique(), email, password)
-          await login(email, password)
-        } catch (error) {
-          throw Error(error.message)
-        }
+      try {
+      // Check if user is already logged in
+        const current = await account.get();
+      
+      if (current) {
+        throw new Error("You are already logged in. Please log out before registering a new account.");
+      }
+    } catch (error) {
+      // If not logged in, Appwrite throws error with code 401 (unauthorized)
+      if (error.code !== 401) {
+        throw new Error(error.message);
+      }
     }
+
+    try {
+      await account.create(ID.unique(), email, password);
+      await login(email, password);
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
 
     async function logout() {
       await account.deleteSession("current")
