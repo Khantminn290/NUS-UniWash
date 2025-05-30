@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
 import { account } from "../lib/appwrite"
 import { ID } from "react-native-appwrite"
 
@@ -6,6 +6,7 @@ export const UserContext = createContext();
 
 export function UserProvider({ children }) {
     const [user, setUser] = useState(null)
+    const [authChecked, setAuthChecked] = useState(false)
 
     
     async function login(email, password) {
@@ -46,6 +47,21 @@ export function UserProvider({ children }) {
       await account.deleteSession("current")
       setUser(null)
     }
+
+    async function getInitialUserValue() {
+    try {
+      const res = await account.get()
+      setUser(res)
+    } catch (error) {
+      setUser(null)
+    } finally {
+      setAuthChecked(true)
+    }
+  }
+
+  useEffect(() => {
+    getInitialUserValue()
+  }, [])
 
     return (
         <UserContext.Provider value ={{ user, login, register, logout }}>

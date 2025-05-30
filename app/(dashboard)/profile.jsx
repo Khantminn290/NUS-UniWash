@@ -3,10 +3,10 @@ import React from 'react'
 import { useUser } from '../../hooks/useUser'
 
 const profile = () => {
-    const { logout } = useUser()
+    const { logout, user } = useUser()
   return (
     <View style={{ margin: 20 }}>
-      <Text>profile</Text>
+      <Text>{ user.email}</Text>
       <Button title="Logout" onPress={logout} />
     </View>
   )
