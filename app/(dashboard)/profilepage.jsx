@@ -3,66 +3,49 @@ import React from 'react'
 import { useUser } from '../../hooks/useUser'
 
 const profilepage = () => {
-  const { logout, user } = useUser()
+  const { logout, user } = useUser();
 
   if (!user) {
     return (
-      <View style={{ margin: 20, backgroundColor: '#D8BFD8' }}>
-        <Text>Loading user...</Text>
+      <View style={styles.container}>
+        <Text style={styles.loadingText}>Loading user...</Text>
       </View>
-    )
+    );
   }
 
   return (
-    <View style={{ margin: 20, backgroundColor: '#D8BFD8' }}>
-      <Text>{user.email}</Text>
-      <Button title="Logout" onPress={logout} />
+    <View style={styles.container}>
+      <Text style={styles.email}>{user.email}</Text>
+      <View style={styles.buttonWrapper}>
+        <Button title="Logout" onPress={logout} color="#1e90ff" />
+      </View>
     </View>
-  )
-}
+  );
+};
 
-export default profilepage
+export default profilepage;
 
 const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-    resizeMode: 'cover',
-    justifyContent: 'center'
-  },
-  overlay: {
+  container: {
     flex: 1,
     backgroundColor: '#D8BFD8',
     alignItems: 'center',
     justifyContent: 'center',
     padding: 20
   },
-  title: {
-    fontSize: 36,
+  email: {
+    fontSize: 18,
     fontWeight: 'bold',
-    color: '#fff',
-    marginBottom: 10
+    color: '#333',
+    marginBottom: 20
   },
-  subtitle: {
+  buttonWrapper: {
+    width: '60%',
+    borderRadius: 8,
+    overflow: 'hidden'
+  },
+  loadingText: {
     fontSize: 16,
-    color: '#eee',
-    marginBottom: 40,
-    textAlign: 'center'
+    color: '#555'
   },
-  button: {
-    backgroundColor: '#1e90ff',
-    paddingVertical: 15,
-    paddingHorizontal: 60,
-    borderRadius: 12,
-    marginVertical: 10,
-    width: '70%',
-    alignItems: 'center'
-  },
-  signup: {
-    backgroundColor: '#00bfff'
-  },
-  buttonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600'
-  }
 });

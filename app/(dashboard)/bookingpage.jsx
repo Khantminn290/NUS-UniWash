@@ -1,15 +1,15 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
-
-const mainpage = () => {
+ import { StyleSheet, Text, View } from 'react-native'
+ import React from 'react'
+ 
+const bookingpage = () => {
   return (
     <View style = {styles.container}>
-      <Text>Main Page</Text>
+      <Text>Booking Page</Text>
     </View>
   )
 }
 
-export default mainpage
+export default bookingpage
 
 const styles = StyleSheet.create({
   container: {

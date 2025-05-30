@@ -1,16 +1,12 @@
-import { Slot } from "expo-router";
-import { UserProvider } from "../../context/UserContext"; // adjust path as needed
 import UserOnly from "../../components/auth/UserOnly";
-
-
+import { Tabs } from "expo-router"
 
 export default function DashboardLayout() {
   return (
     <UserOnly>
-      <UserProvider>
-        <Slot />
-      </UserProvider>
+      <Tabs
+        screenOptions={{ headerShown: false }}
+      />
     </UserOnly>
-    
   );
 }
