@@ -3,11 +3,19 @@ import React from 'react'
 import { useUser } from '../../hooks/useUser'
 
 const profilepage = () => {
-    const { logout, user } = useUser()
+  const { logout, user } = useUser()
+
+  if (!user) {
+    return (
+      <View style={{ margin: 20 }}>
+        <Text>Loading user...</Text>
+      </View>
+    )
+  }
 
   return (
     <View style={{ margin: 20 }}>
-      <Text> { user.email } </Text>
+      <Text>{user.email}</Text>
       <Button title="Logout" onPress={logout} />
     </View>
   )
