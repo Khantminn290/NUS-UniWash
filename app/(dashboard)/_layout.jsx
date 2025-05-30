@@ -5,9 +5,14 @@ import { MaterialIcons } from "@expo/vector-icons";
 export default function DashboardLayout() {
   return (
     <UserOnly>
-      <Tabs screenOptions={{ headerShown: false }}>
+      <Tabs screenOptions={{ 
+        headerShown: false,
+        tabBarStyle: {
+          paddingBottom: 20,
+          height: 65,
+        } }}>
         <Tabs.Screen
-          name="mainpage" // This matches the file name 
+          name="mainpage" // matche the file name 
           options={{
             title: "Home", // Custom title
             tabBarIcon: ({ color, size }) => (
