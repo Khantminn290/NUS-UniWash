@@ -14,7 +14,6 @@ export function UserProvider({ children }) {
           await account.createEmailPasswordSession(email, password)
           const response = await account.get()
           setUser(response)
-
         } catch (error) {
           throw Error(error.message)
         }

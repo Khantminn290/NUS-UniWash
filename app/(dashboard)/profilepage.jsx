@@ -2,17 +2,18 @@ import { StyleSheet, Text, View, Button } from 'react-native'
 import React from 'react'
 import { useUser } from '../../hooks/useUser'
 
-const profile = () => {
+const profilepage = () => {
     const { logout, user } = useUser()
+
   return (
     <View style={{ margin: 20 }}>
-      <Text>{ user.email}</Text>
+      <Text> { user.email } </Text>
       <Button title="Logout" onPress={logout} />
     </View>
   )
 }
 
-export default profile
+export default profilepage
 
 const styles = StyleSheet.create({
   background: {

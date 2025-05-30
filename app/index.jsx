@@ -17,7 +17,7 @@ export default function startpage() {
           <Text style={styles.buttonText}>Sign Up</Text>
         </Pressable>
 
-        <Pressable style={styles.button} onPress={() => router.push('/profile')}>
+        <Pressable style={styles.button} onPress={() => router.push('/profilepage')}>
           <Text style={styles.buttonText}>Profile Page</Text>
         </Pressable>
       </View>
