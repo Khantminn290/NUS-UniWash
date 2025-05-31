@@ -64,13 +64,8 @@ export function UserProvider({ children }) {
 
   
   useEffect(() => {
-  if (!authChecked) {
-    getInitialUserValue();
-  }
-}, [authChecked]);
-
-
-
+    getInitialUserValue()
+  }, [])
 
     return (
         <UserContext.Provider value ={{ user, login, register, logout, authChecked }}>
