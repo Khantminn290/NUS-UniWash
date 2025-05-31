@@ -2,6 +2,7 @@ import { View, Text, TextInput, Pressable, StyleSheet, Keyboard, TouchableWithou
 import { useRouter } from 'expo-router';
 import { useState, useEffect } from 'react';
 import { useUser } from '../../hooks/useUser';
+import ThemedLoader from '../../components/ThemedLoader';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -65,7 +66,6 @@ export default function LoginPage() {
         <Pressable style={styles.registerButton} onPress={() => router.push('/signuppage')}>
           <Text style={styles.registerText}>Register Instead</Text>
         </Pressable>
-
       </View>
     </TouchableWithoutFeedback>
 );

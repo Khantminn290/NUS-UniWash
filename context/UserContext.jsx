@@ -15,9 +15,6 @@ export function UserProvider({ children }) {
           const response = await account.get()
           setUser(response)
         } catch (error) {
-          if (error.code === 401) {
-            throw new Error("Invalid email or password. Please try again.");
-          }
           throw Error(error.message)
         }
     }
