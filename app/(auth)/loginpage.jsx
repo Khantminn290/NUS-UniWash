@@ -1,20 +1,18 @@
-import { View, Text, TextInput, Pressable, StyleSheet, Keyboard, TouchableWithoutFeedback, ImageBackground } from 'react-native';
+import { View, Text, TextInput, Pressable, StyleSheet, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useUser } from '../../hooks/useUser';
-import ThemedLoader from '../../components/ThemedLoader';
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [error, setError] = useState(null)
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState(null);
 
-  const { user, login, authChecked } = useUser();
+  const { user, login } = useUser();
 
   const handleSubmit = async () => {
     setError(null);
-
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setError('Please enter a valid email address.');
@@ -23,20 +21,19 @@ export default function LoginPage() {
 
     try {
       await login(email, password);
-   }  catch (error) {
+    } catch (error) {
       setError(error.message);
-   }
+    }
   };
 
   return (
-  
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.overlay}>
         <Text style={styles.title}>Welcome Back</Text>
 
         <TextInput 
           placeholder="Email" 
-          placeholderTextColor="#ccc"
+          placeholderTextColor="#999"
           style={styles.input} 
           onChangeText={setEmail}
           value={email} 
@@ -44,7 +41,7 @@ export default function LoginPage() {
 
         <TextInput 
           placeholder="Password"
-          placeholderTextColor="#ccc"
+          placeholderTextColor="#999"
           onChangeText={setPassword}
           value={password}
           secureTextEntry 
@@ -68,99 +65,71 @@ export default function LoginPage() {
         </Pressable>
       </View>
     </TouchableWithoutFeedback>
-);
+  );
 }
 
 const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-    justifyContent: 'center',
-  },
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.6)', // translucent black overlay
+    backgroundColor: '#FAF3DD',
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: 24,
   },
   title: {
-    fontSize: 34,
-    fontWeight: 'bold',
-    color: '#ffffff',
-    marginBottom: 32,
-    textShadowColor: '#000',
-    textShadowOffset: { width: 0, height: 2 },
-    textShadowRadius: 4,
+    fontSize: 32,
+    fontWeight: '700',
+    color: '#333',
+    marginBottom: 28,
   },
   input: {
     width: '100%',
     borderWidth: 1,
-    borderColor: '#ffffff88',
-    backgroundColor: 'rgba(255,255,255,0.1)',
-    color: '#fff',
+    borderColor: '#ccc',
+    backgroundColor: '#fff',
+    color: '#333',
     padding: 14,
     borderRadius: 10,
     marginBottom: 16,
+    fontSize: 16,
   },
   button: {
-    backgroundColor: '#1e90ff',
+    backgroundColor: '#FF8C42',
     padding: 14,
     borderRadius: 10,
     alignItems: 'center',
     width: '100%',
     shadowColor: '#000',
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.15,
     shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
-    marginBottom: 16
+    shadowRadius: 3,
+    marginBottom: 16,
   },
   buttonText: {
     color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 16
-  },
-  back: {
-    marginTop: 10,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderColor: '#1e90ff',
-    borderWidth: 1,
-    borderRadius: 8,
-    backgroundColor: 'rgba(30,144,255,0.1)',
+    fontWeight: '600',
+    fontSize: 16,
   },
   error: {
     color: '#fff',
-    backgroundColor: 'rgba(255,0,0,0.4)',
+    backgroundColor: '#D9534F',
     padding: 10,
     borderRadius: 6,
-    textAlign: 'center'
-  },
-  backText: {
-  color: '#1e90ff',
-  fontSize: 14,
-  fontWeight: '600',
-  textAlign: 'center',
+    textAlign: 'center',
   },
   registerButton: {
-  marginTop: 10,
-  paddingVertical: 10,
-  paddingHorizontal: 20,
-  borderColor: '#00bfff',
-  borderWidth: 1,
-  borderRadius: 8,
-  backgroundColor: 'rgba(0,191,255,0.1)',
+    marginTop: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderColor: '#FF8C42',
+    borderWidth: 1,
+    borderRadius: 8,
+    backgroundColor: '#fff8f1',
   },
   registerText: {
-  color: '#00bfff',
-  fontSize: 14,
-  fontWeight: '600',
-  textAlign: 'center',
+    color: '#FF8C42',
+    fontSize: 14,
+    fontWeight: '600',
+    textAlign: 'center',
   },
-  logo: {
-  width: 120,
-  height: 120,
-  marginBottom: 20,
-  resizeMode: 'contain',
-  tintColor: '#333333' // Optional: tint to blend with text & background
-},
 });
