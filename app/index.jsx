@@ -1,11 +1,12 @@
 import { View, Text, StyleSheet, Pressable, ImageBackground, Image } from 'react-native';
 import { useRouter } from 'expo-router';
+import GuestOnly from '../components/auth/GuestOnly';
 
 export default function StartPage() {
   const router = useRouter();
 
   return (
-    
+    <GuestOnly>
       <View style={styles.overlay}>
         <Text style={styles.title}>NUS UniWash</Text>
         <Text style={styles.subtitle}>Smart Laundry for Students</Text>
@@ -22,6 +23,7 @@ export default function StartPage() {
           <Text style={styles.buttonText}>Profile Page</Text>
         </Pressable>
       </View>
+    </GuestOnly>
   );
 }
 

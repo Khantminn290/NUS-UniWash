@@ -26,12 +26,6 @@ export default function LoginPage() {
     }
   };
 
-  useEffect(() => {
-    if (user) {
-      router.replace('/profilepage');
-    }
-  }, [user]);
-
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.overlay}>

@@ -1,7 +1,6 @@
 import { useRouter } from "expo-router"
 import { useUser } from "../../hooks/useUser"
 import { useEffect } from "react"
-import { Text } from "react-native"
 import ThemedLoader from "../ThemedLoader"
 
 const GuestOnly = ({ children }) => {
@@ -9,9 +8,9 @@ const GuestOnly = ({ children }) => {
     const router = useRouter()
 
     useEffect(() => {
-        if (authChecked && user !== null) {
-            router.replace('/profilepage')
-        }
+    if (authChecked && user !== null) {
+        router.replace('/profilepage');
+    }
     }, [user, authChecked])
 
     if (!authChecked || user) {

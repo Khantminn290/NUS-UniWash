@@ -12,8 +12,7 @@ export function UserProvider({ children }) {
     async function login(email, password) {
         try {
           await account.createEmailPasswordSession(email, password)
-          const response = await account.get()
-          setUser(response)
+          await getInitialUserValue()
         } catch (error) {
           throw Error(error.message)
         }
