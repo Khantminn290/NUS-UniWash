@@ -8,7 +8,7 @@ const UserOnly = ({ children }) => {
     const router = useRouter()
 
     useEffect(() => {
-        // if the user is == null means not logged in we redirect the usert to the login page
+        // if the user is == null means not logged in we redirect the user to the login page
         if (authChecked && user === null) {
             router.replace('/loginpage')
         }

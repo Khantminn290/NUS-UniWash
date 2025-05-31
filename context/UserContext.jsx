@@ -1,21 +1,26 @@
 import { createContext, useState, useEffect } from "react";
 import { account } from "../lib/appwrite"
 import { ID } from "react-native-appwrite"
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Text } from "react-native"
 
 export const UserContext = createContext();
 
 export function UserProvider({ children }) {
     const [user, setUser] = useState(null)
     const [authChecked, setAuthChecked] = useState(false)
-
+    const [loading, setLoading] = useState(false)
     
     async function login(email, password) {
-        try {
-          await account.createEmailPasswordSession(email, password)
-          await getInitialUserValue()
-        } catch (error) {
-          throw Error(error.message)
-        }
+
+      setLoading(true)
+      try {
+        await account.createEmailPasswordSession(email, password)
+        await getInitialUserValue()
+      } catch (error) {
+        throw Error(error.message)
+      }
+      setLoading(false)
     }
 
     async function register(email, password) {
@@ -60,14 +65,15 @@ export function UserProvider({ children }) {
     }
   }
 
-  
   useEffect(() => {
     getInitialUserValue()
   }, [])
 
     return (
-        <UserContext.Provider value ={{ user, login, register, logout, authChecked }}>
-          {children}
-        </UserContext.Provider>
+      <UserContext.Provider value={{ user, login, register, logout, authChecked }}>
+        {loading ? <SafeAreaView>
+                    <Text>Loading...</Text>
+                   </SafeAreaView>: children}
+      </UserContext.Provider>
     )
 }

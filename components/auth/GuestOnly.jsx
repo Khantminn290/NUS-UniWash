@@ -4,7 +4,7 @@ import { useEffect } from "react"
 import ThemedLoader from "../ThemedLoader"
 
 const GuestOnly = ({ children }) => {
-    const { user, authChecked } = useUser()
+    const { user, authChecked} = useUser()
     const router = useRouter()
 
     useEffect(() => {
