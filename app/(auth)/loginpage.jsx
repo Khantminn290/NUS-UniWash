@@ -1,6 +1,6 @@
 import { View, Text, TextInput, Pressable, StyleSheet, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useUser } from '../../hooks/useUser';
 
 export default function LoginPage() {
@@ -25,6 +25,12 @@ export default function LoginPage() {
       setError(error.message);
     }
   };
+
+  useEffect(() => {
+    if (user) {
+      router.replace('/profilepage');
+    }
+  }, [user]);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
