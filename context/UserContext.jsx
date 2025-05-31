@@ -15,6 +15,9 @@ export function UserProvider({ children }) {
           const response = await account.get()
           setUser(response)
         } catch (error) {
+          if (error.code === 401) {
+            throw new Error("Invalid email or password. Please try again.");
+          }
           throw Error(error.message)
         }
     }
@@ -38,6 +41,9 @@ export function UserProvider({ children }) {
       await account.create(ID.unique(), email, password);
       await login(email, password);
     } catch (error) {
+      if (error.code === 409) {  // 409 is usually "Conflict" for duplicate
+      throw new Error("This email is already registered. Please log in or use another email.");
+      }
       throw new Error(error.message);
     }
   }

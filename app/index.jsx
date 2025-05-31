@@ -1,15 +1,11 @@
-import { View, Text, StyleSheet, Pressable, ImageBackground } from 'react-native';
+import { View, Text, StyleSheet, Pressable, ImageBackground, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 
 export default function StartPage() {
   const router = useRouter();
 
   return (
-    <ImageBackground 
-      source={require('../assets/washing_machine_animated.jpg')} 
-      style={styles.background} 
-      resizeMode="cover"
-    >
+    
       <View style={styles.overlay}>
         <Text style={styles.title}>NUS UniWash</Text>
         <Text style={styles.subtitle}>Smart Laundry for Students</Text>
@@ -26,7 +22,6 @@ export default function StartPage() {
           <Text style={styles.buttonText}>Profile Page</Text>
         </Pressable>
       </View>
-    </ImageBackground>
   );
 }
 
@@ -36,7 +31,7 @@ const styles = StyleSheet.create({
   },
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.4)', // Optional dim effect
+    backgroundColor: '#FAF3DD', // Optional dim effect
     alignItems: 'center',
     justifyContent: 'center',
     padding: 24,
@@ -44,12 +39,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 36,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#333333',
     marginBottom: 10,
   },
   subtitle: {
     fontSize: 16,
-    color: '#eee',
+    color: '#555555',
     marginBottom: 40,
     textAlign: 'center',
   },
@@ -73,4 +68,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+  logo: {
+  width: 120,
+  height: 120,
+  marginBottom: 20,
+  resizeMode: 'contain',
+  tintColor: '#333333' // Optional: tint to blend with text & background
+},
 });
