@@ -20,7 +20,7 @@ export default function LoginPage() {
       setError(error.message);
    }
   };
-
+  
   return (
       <TouchableWithoutFeedback onPress ={Keyboard.dismiss}>
         <View style={styles.container}>

@@ -61,8 +61,11 @@ export function UserProvider({ children }) {
 
   
   useEffect(() => {
-    getInitialUserValue()
-  }, [])
+  if (!authChecked) {
+    getInitialUserValue();
+  }
+}, [authChecked]);
+
 
 
 
