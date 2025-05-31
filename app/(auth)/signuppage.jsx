@@ -13,8 +13,42 @@
 
     const { user, register } = useUser();
 
+    function validatePassword(password) {
+    const errors = [];
+
+    if (!/[A-Z]/.test(password)) {
+      errors.push("one uppercase letter");
+    }
+    if (!/[a-z]/.test(password)) {
+      errors.push("one lowercase letter");
+    }
+    if (!/[0-9]/.test(password)) {
+      errors.push("one number");
+    }
+    if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+      errors.push("one special character");
+    }
+
+    if (errors.length > 0) {
+      return `Password must contain at least ${errors.join(", ")}.`;
+    }
+
+    return null;
+  }
+
     const handleSubmit = async () => {
       setError(null);
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        setError('Please enter a valid email address.');
+        return;
+      }
+      const validationError = validatePassword(password);
+      if (validationError) {
+        setError(validationError);
+        return;
+      }
       try {
         await register(email, password);
         console.log('current user is: ', user);
