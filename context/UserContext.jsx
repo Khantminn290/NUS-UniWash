@@ -49,6 +49,7 @@ export function UserProvider({ children }) {
 
     async function getInitialUserValue() {
     try {
+      await account.getSession('current');
       const res = await account.get()
       setUser(res)
     } catch (error) {
@@ -58,9 +59,12 @@ export function UserProvider({ children }) {
     }
   }
 
+  
   useEffect(() => {
     getInitialUserValue()
   }, [])
+
+
 
     return (
         <UserContext.Provider value ={{ user, login, register, logout, authChecked }}>

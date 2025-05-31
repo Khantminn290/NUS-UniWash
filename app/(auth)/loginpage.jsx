@@ -1,6 +1,6 @@
 import { View, Text, TextInput, Pressable, StyleSheet, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useUser } from '../../hooks/useUser';
 
 export default function LoginPage() {
@@ -9,17 +9,17 @@ export default function LoginPage() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState(null)
 
-  const { user, login } = useUser();
+  const { user, login, authChecked } = useUser();
 
   const handleSubmit = async () => {
-      setError(null) // to reset the error
+    setError(null);
 
-      try {
-        await login(email, password)
-      } catch (error) {
-        setError(error.message)
-      }
-    }
+    try {
+      await login(email, password);
+   }  catch (error) {
+      setError(error.message);
+   }
+  };
 
   return (
       <TouchableWithoutFeedback onPress ={Keyboard.dismiss}>
