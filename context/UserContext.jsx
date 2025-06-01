@@ -12,15 +12,16 @@ export function UserProvider({ children }) {
     const [loading, setLoading] = useState(false)
     
     async function login(email, password) {
-
-      setLoading(true)
       try {
+        setLoading(true)
         await account.createEmailPasswordSession(email, password)
         await getInitialUserValue()
       } catch (error) {
+        setLoading(false)
         throw Error(error.message)
+      } finally {
+        setLoading(false)
       }
-      setLoading(false)
     }
 
     async function register(email, password) {
@@ -71,9 +72,7 @@ export function UserProvider({ children }) {
 
     return (
       <UserContext.Provider value={{ user, login, register, logout, authChecked }}>
-        {loading ? <SafeAreaView>
-                    <Text>Loading...</Text>
-                   </SafeAreaView>: children}
+        {children}
       </UserContext.Provider>
     )
 }

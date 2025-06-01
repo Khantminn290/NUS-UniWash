@@ -9,7 +9,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
 
-  const { user, login } = useUser();
+  const { user, login} = useUser();
 
   const handleSubmit = async () => {
     setError(null);

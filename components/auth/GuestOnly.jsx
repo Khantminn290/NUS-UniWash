@@ -3,23 +3,28 @@ import { useUser } from "../../hooks/useUser"
 import { useEffect } from "react"
 import ThemedLoader from "../ThemedLoader"
 
+
 const GuestOnly = ({ children }) => {
-    const { user, authChecked} = useUser()
-    const router = useRouter()
+   const { user, authChecked, loading} = useUser()
+   const router = useRouter()
 
-    useEffect(() => {
-    if (authChecked && user !== null) {
-        router.replace('/profilepage');
-    }
-    }, [user, authChecked])
 
-    if (!authChecked || user) {
-        return (
-            <ThemedLoader/>
-        )
-    }
-    
-    return children
+   useEffect(() => {
+   if (authChecked && user !== null) {
+       router.replace('/profilepage');
+   }
+   }, [user, authChecked])
+
+
+   if (!authChecked) {
+       return (
+           <ThemedLoader/>
+       )
+   }
+
+
+   return children
 }
+
 
 export default GuestOnly
