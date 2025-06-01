@@ -10,18 +10,19 @@ export function UserProvider({ children }) {
     const [user, setUser] = useState(null)
     const [authChecked, setAuthChecked] = useState(false)
     const [loading, setLoading] = useState(false)
-    
+    const [session, setSession] = useState(false)
+
     async function login(email, password) {
+      setLoading(true)
       try {
-        setLoading(true)
-        await account.createEmailPasswordSession(email, password)
-        await getInitialUserValue()
+        const responseSession = await account.createEmailPasswordSession(email, password)
+        const response = await account.get()
+        setSession(responseSession)
+        setUser(response)
       } catch (error) {
-        setLoading(false)
         throw Error(error.message)
-      } finally {
-        setLoading(false)
       }
+      setLoading(false)
     }
 
     async function register(email, password) {
@@ -67,11 +68,11 @@ export function UserProvider({ children }) {
   }
 
   useEffect(() => {
-    getInitialUserValue()
+  getInitialUserValue()
   }, [])
 
     return (
-      <UserContext.Provider value={{ user, login, register, logout, authChecked }}>
+      <UserContext.Provider value={{ user, login, register, logout, authChecked, session }}>
         {children}
       </UserContext.Provider>
     )

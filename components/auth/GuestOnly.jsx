@@ -5,9 +5,8 @@ import ThemedLoader from "../ThemedLoader"
 
 
 const GuestOnly = ({ children }) => {
-   const { user, authChecked, loading} = useUser()
+   const {user, authChecked} = useUser()
    const router = useRouter()
-
 
    useEffect(() => {
    if (authChecked && user !== null) {
@@ -15,16 +14,13 @@ const GuestOnly = ({ children }) => {
    }
    }, [user, authChecked])
 
-
    if (!authChecked) {
        return (
            <ThemedLoader/>
        )
    }
 
-
    return children
 }
-
 
 export default GuestOnly
