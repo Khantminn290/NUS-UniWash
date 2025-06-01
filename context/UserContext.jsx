@@ -1,8 +1,6 @@
 import { createContext, useState, useEffect } from "react";
 import { account } from "../lib/appwrite"
 import { ID } from "react-native-appwrite"
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Text } from "react-native"
 
 export const UserContext = createContext();
 
