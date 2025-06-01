@@ -1,6 +1,6 @@
 import { View, Text, TextInput, Pressable, StyleSheet, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useState, useEffect } from 'react';
+import { useState} from 'react';
 import { useUser } from '../../hooks/useUser';
 
 export default function LoginPage() {
@@ -9,7 +9,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
 
-  const { user, login} = useUser();
+  const {login} = useUser();
 
   const handleSubmit = async () => {
     setError(null);

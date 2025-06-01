@@ -5,14 +5,6 @@ import { useUser } from '../../hooks/useUser'
 const profilepage = () => {
   const { logout, user } = useUser();
 
-  if (!user) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.loadingText}>Loading user...</Text>
-      </View>
-    );
-  }
-
   return (
     <View style={styles.container}>
       <Text style={styles.email}>{user.email}</Text>

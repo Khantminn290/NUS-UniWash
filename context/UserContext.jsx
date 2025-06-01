@@ -7,20 +7,15 @@ export const UserContext = createContext();
 export function UserProvider({ children }) {
     const [user, setUser] = useState(null)
     const [authChecked, setAuthChecked] = useState(false)
-    const [loading, setLoading] = useState(false)
-    const [session, setSession] = useState(false)
 
     async function login(email, password) {
-      setLoading(true)
       try {
-        const responseSession = await account.createEmailPasswordSession(email, password)
+        await account.createEmailPasswordSession(email, password)
         const response = await account.get()
-        setSession(responseSession)
         setUser(response)
       } catch (error) {
         throw Error(error.message)
       }
-      setLoading(false)
     }
 
     async function register(email, password) {
@@ -70,7 +65,7 @@ export function UserProvider({ children }) {
   }, [])
 
     return (
-      <UserContext.Provider value={{ user, login, register, logout, authChecked, session }}>
+      <UserContext.Provider value={{ user, login, register, logout, authChecked}}>
         {children}
       </UserContext.Provider>
     )
