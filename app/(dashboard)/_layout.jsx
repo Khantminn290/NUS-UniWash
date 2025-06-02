@@ -1,6 +1,6 @@
 import UserOnly from "../../components/auth/UserOnly";
 import { Tabs } from "expo-router"
-import { MaterialIcons } from "@expo/vector-icons"; //hello
+import { MaterialIcons } from "@expo/vector-icons";
 
 export default function DashboardLayout() {
   return (
