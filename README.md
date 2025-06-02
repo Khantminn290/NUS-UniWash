@@ -4,5 +4,7 @@
 
 ### 1. Clone the repository
 ```bash
-git clone https://github.com/Khantminn290/Orbital-25.git
-cd 
+git clone https://github.com/Khantminn290/NUS-UniWash.git
+cd NUS-UniWash
+
+### 2. Install frontend dependencies 
