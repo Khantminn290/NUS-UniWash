@@ -25,20 +25,9 @@ cd NUS-UniWash
 
 ---
 
-### 3. Create a `.env` file in the root directory
-Add the following variables:
-```
-APPWRITE_ENDPOINT=https://your-appwrite-url/v1
-APPWRITE_PROJECT_ID=your-project-id
-APPWRITE_PLATFORM=your-platform-id
-APPWRITE_API_KEY=your-api-key
-```
-
----
-
 ## 💻 Frontend Setup (React Native)
 
-### 4. Install frontend dependencies
+### 3. Install frontend dependencies
 ```bash
 npm install
 ```
@@ -51,7 +40,7 @@ yarn install
 
 ---
 
-### 5. Run the app
+### 4. Run the app
 ```bash
 npx expo start
 ```
