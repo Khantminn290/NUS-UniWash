@@ -18,10 +18,6 @@ export default function StartPage() {
         <Pressable style={[styles.button, styles.signup]} onPress={() => router.push('/signuppage')}>
           <Text style={styles.buttonText}>Sign Up</Text>
         </Pressable>
-
-        <Pressable style={[styles.button, styles.profile]} onPress={() => router.push('/profilepage')}>
-          <Text style={styles.buttonText}>Profile Page</Text>
-        </Pressable>
       </View>
     </GuestOnly>
   );
@@ -33,7 +29,7 @@ const styles = StyleSheet.create({
   },
   overlay: {
     flex: 1,
-    backgroundColor: '#FAF3DD', // Optional dim effect
+    backgroundColor: '#FAF3DD', 
     alignItems: 'center',
     justifyContent: 'center',
     padding: 24,
@@ -51,7 +47,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   button: {
-    backgroundColor: '#1e90ff',
+    backgroundColor: '#FF8C42',
     paddingVertical: 15,
     paddingHorizontal: 60,
     borderRadius: 12,
@@ -60,7 +56,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   signup: {
-    backgroundColor: '#00bfff',
+    backgroundColor: '#FF9900',
   },
   profile: {
     backgroundColor: '#87cefa',
@@ -75,6 +71,6 @@ const styles = StyleSheet.create({
   height: 120,
   marginBottom: 20,
   resizeMode: 'contain',
-  tintColor: '#333333' // Optional: tint to blend with text & background
+  tintColor: '#333333' 
 },
 });

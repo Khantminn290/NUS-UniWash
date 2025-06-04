@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     borderColor: '#FF8C42',
     borderWidth: 1,
     borderRadius: 8,
-    backgroundColor: '#fff8f1',
+    backgroundColor: '#FFFFFF',
   },
   registerText: {
     color: '#FF8C42',
