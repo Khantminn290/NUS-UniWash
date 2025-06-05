@@ -14,7 +14,7 @@ const initialMachines = [
 ];
 
 const MainPage = () => {
-  const { logout, user } = useUser();
+  const { user } = useUser();
   const [machines, setMachines] = useState(initialMachines);
 
   const toggleStatus = (id) => {
@@ -28,12 +28,10 @@ const MainPage = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Welcome Message */}
       <View style={styles.header}>
-        <Text style={styles.welcomeText}>Welcome, {user.email}</Text>
+        <Text style={styles.welcomeText}>Welcome, {user.name}</Text>
       </View>
-
-      {/* Dashboard */}
+      
       <View style={styles.dashboard}>
         <Text style={styles.dashboardTitle}>Washing Machine Status</Text>
         <ScrollView style={{ width: '100%' }}>

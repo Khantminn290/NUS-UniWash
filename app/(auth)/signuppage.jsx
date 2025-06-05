@@ -33,7 +33,7 @@ export default function SignupPage() {
       return;
     }
     try {
-      await register(email, password);
+      await register(email, password, name);
       console.log('current user is: ', user);
     } catch (error) {
       setError(error.message);

@@ -18,7 +18,7 @@ export function UserProvider({ children }) {
       }
     }
 
-    async function register(email, password) {
+    async function register(email, password, name) {
       try {
       // Check if user is already logged in
         const current = await account.get();
@@ -34,7 +34,7 @@ export function UserProvider({ children }) {
     }
 
     try {
-      await account.create(ID.unique(), email, password);
+      await account.create(ID.unique(), email, password, name);
       await login(email, password);
     } catch (error) {
       if (error.code === 409) {  // 409 is usually "Conflict" for duplicate
