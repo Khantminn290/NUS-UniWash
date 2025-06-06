@@ -62,7 +62,8 @@ export function UserProvider({ children }) {
 
   async function changeUserName(newName) {
     try {
-      await account.updateName(newName);
+      const updatedUser = await account.updateName(newName);
+      setUser(updatedUser)
     } catch (error) {
 
     }
