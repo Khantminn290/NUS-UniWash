@@ -1,6 +1,5 @@
 import React, { useState, useContext } from 'react';
 import {View,Text,Button,TextInput,TouchableOpacity,StyleSheet,Alert,ScrollView} from 'react-native';
-import { UserContext } from '../context/UserContext';
 import dayjs from 'dayjs';
 import { useUser } from '../../hooks/useUser';
 
