@@ -44,12 +44,12 @@ export function UserProvider({ children }) {
     }
   }
 
-    async function logout() {
+  async function logout() {
       await account.deleteSession("current")
       setUser(null)
-    }
+  }
 
-    async function getInitialUserValue() {
+  async function getInitialUserValue() {
     try {
       const res = await account.get()
       setUser(res)
@@ -57,6 +57,14 @@ export function UserProvider({ children }) {
       setUser(null)
     } finally {
       setAuthChecked(true)
+    }
+  }
+
+  async function changeUserName(newName) {
+    try {
+      await account.updateName(newName);
+    } catch (error) {
+
     }
   }
 

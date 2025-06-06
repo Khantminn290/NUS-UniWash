@@ -2,14 +2,14 @@ import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
-const mainpage = () => {
+const updateparticulars = () => {
   return (
     <SafeAreaView>
-      <Text>Main page</Text>
+      <Text>updateparticulars</Text>
     </SafeAreaView>
   )
 }
 
-export default mainpage
+export default updateparticulars
 
 const styles = StyleSheet.create({})

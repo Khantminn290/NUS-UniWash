@@ -38,6 +38,12 @@ export default function DashboardLayout() {
             ),
           }}
         />
+        <Tabs.Screen
+          name="updateparticulars"
+          options={{
+          href: null, // This hides it from the tab bar
+        }}
+        />
       </Tabs>
     </UserOnly>
   );
