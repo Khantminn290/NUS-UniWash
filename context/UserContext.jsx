@@ -63,7 +63,8 @@ export function UserProvider({ children }) {
   async function changeUserName(newName) {
     try {
       const updatedUser = await account.updateName(newName);
-      setUser(updatedUser)
+      const response = await account.get()
+      setUser(response)
     } catch (error) {
 
     }
@@ -74,7 +75,7 @@ export function UserProvider({ children }) {
   }, [])
 
     return (
-      <UserContext.Provider value={{ user, login, register, logout, authChecked}}>
+      <UserContext.Provider value={{ user, login, register, logout, authChecked, changeUserName}}>
         {children}
       </UserContext.Provider>
     )
