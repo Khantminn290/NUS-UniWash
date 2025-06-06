@@ -1,15 +1,15 @@
  import { StyleSheet, Text, View } from 'react-native'
  import React from 'react' //hello
 
-const bookingpage = () => {
+const bookingschedule = () => {
   return (
     <View style = {styles.container}>
-      <Text>Booking Page</Text>
+      <Text>Booking Schedule</Text>
     </View>
   )
 }
 
-export default bookingpage
+export default bookingschedule
 
 const styles = StyleSheet.create({
   container: {

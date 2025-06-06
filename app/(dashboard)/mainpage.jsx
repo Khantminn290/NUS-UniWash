@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: 'flex-start',
-    marginBottom: 16,
+    marginBottom: 30,
   },
   welcomeText: {
     fontSize: 18,

@@ -21,7 +21,7 @@ export default function DashboardLayout() {
           }}
         />
         <Tabs.Screen
-          name="bookingpage" 
+          name="bookingschedule" 
           options={{
             title: "Bookings", // Custom title
             tabBarIcon: ({ color, size }) => (
