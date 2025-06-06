@@ -52,15 +52,6 @@ const MainPage = () => {
                   {machine.status}
                 </Text>
               </View>
-              <TouchableOpacity
-                style={[
-                  styles.bookButton,
-                  machine.status !== 'Available' && { backgroundColor: '#ccc' },
-                ]}
-                onPress={() => toggleStatus(machine.id)}
-              >
-                <Text style={styles.bookButtonText}>Book</Text>
-              </TouchableOpacity>
             </View>
           ))}
         </ScrollView>
