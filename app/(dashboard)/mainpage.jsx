@@ -56,7 +56,7 @@ const MainPage = () => {
                 style={[
                   styles.bookButton,
                   machine.status !== 'Available' && { backgroundColor: '#ccc' },
-                ]}
+                ]} //hello
                 onPress={() => toggleStatus(machine.id)}
               >
                 <Text style={styles.bookButtonText}>Book</Text>
