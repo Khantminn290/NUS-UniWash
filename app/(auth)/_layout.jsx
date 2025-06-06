@@ -10,7 +10,7 @@ export default function AuthLayout() {
 
   useEffect(() => {
     if (authChecked && user !== null) {
-      router.replace("/profilepage");
+      router.replace("/mainpage");
     }
   }, [authChecked, user]);
 
