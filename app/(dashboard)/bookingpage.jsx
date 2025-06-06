@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import {View,Text,Button,TextInput,TouchableOpacity,StyleSheet,Alert,ScrollView} from 'react-native';
+import {View,Text,Button,TextInput,TouchableOpacity,StyleSheet,Alert,ScrollView, Keyboard, TouchableWithoutFeedback, Pressable} from 'react-native';
 import dayjs from 'dayjs';
 import { useUser } from '../../hooks/useUser';
 
@@ -32,6 +32,19 @@ const bookingpage = () => {
       value: date.format('YYYY-MM-DD'),  // for internal use
     };
   });
+
+  const handleBooking = () => {
+    if (!machineNumber || !selectedSlot || !selectedDate) {
+      Alert.alert('Missing Info', 'Please select machine, date, and time slot.');
+      return;
+    }
+
+    Alert.alert(
+      'Booking Info',
+      `User: ${user?.name}\nMachine: ${machineNumber}\nDate: ${selectedDate}\nSlot: ${selectedSlot}`
+    );
+  };
+
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
