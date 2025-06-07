@@ -1,22 +1,35 @@
- import { StyleSheet, Text, View } from 'react-native'
- import React from 'react' //hello
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React from 'react';
+import { router } from 'expo-router';
 
-const bookingschedule = () => {
+const BookingSchedule = () => {
   return (
-    <View style = {styles.container}>
-      <Text>Booking Schedule</Text>
+    <View style={styles.container}>
+      <TouchableOpacity style={styles.button} onPress={() => router.push('./bookingpage')}>
+        <Text style={styles.buttonText}>Book</Text>
+      </TouchableOpacity>
     </View>
-  )
-}
+  );
+};
 
-export default bookingschedule
+export default BookingSchedule;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center', // center vertically
-    alignItems: 'center',     // center horizontally (optional)
-    padding: 24,
-    backgroundColor: '#f2f2f2', // to match your theme
+    justifyContent: 'center',  // center vertically
+    alignItems: 'center',      // center horizontally
+    backgroundColor: '#FFF5E1', // cream theme background
+  },
+  button: {
+    backgroundColor: '#FF6B35', // orange
+    paddingVertical: 14,
+    paddingHorizontal: 28,
+    borderRadius: 25,
+  },
+  buttonText: {
+    color: '#FFF',
+    fontSize: 18,
+    fontWeight: '600',
   },
 });
