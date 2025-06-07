@@ -12,6 +12,7 @@ export function BookingProvider({ children }) {
     const [booking, setBooking] = useState([])
     const { user } = useUser()
 
+    // this function only fetches the current logged in user's bookings
     async function fetchBooking() {
         try {
             const response = await databases.listDocuments(
