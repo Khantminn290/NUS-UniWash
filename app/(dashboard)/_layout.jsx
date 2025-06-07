@@ -50,6 +50,12 @@ export default function DashboardLayout() {
           href: null, // This hides it from the tab bar
         }}
         />
+        <Tabs.Screen
+          name="userbookingsummary"
+          options={{
+          href: null, // This hides it from the tab bar
+        }}
+        />
       </Tabs>
     </UserOnly>
   );

@@ -1,6 +1,6 @@
-import { createContext, useState} from "react";
-import { databases } from "../lib/appwrite";
-import { ID, Permission, Role } from "react-native-appwrite";
+import { createContext, useEffect, useState} from "react";
+import { databases, client } from "../lib/appwrite";
+import { ID, Permission, Query, Role } from "react-native-appwrite";
 import { useUser } from "../hooks/useUser";
 
 const DATABASE_ID = "6843fa14001fa0d2b7e6"
@@ -14,7 +14,15 @@ export function BookingProvider({ children }) {
 
     async function fetchBooking() {
         try {
-            
+            const response = await databases.listDocuments(
+                DATABASE_ID,
+                COLLECTION_ID,
+                [
+                    Query.equal('userId', user.$id) // grab all the booking records in the collection where this condition is true
+                ]
+            )
+            setBooking(response.documents)
+            console.log(response.documents)
         } catch (error) {
             console.log(error)
         }
@@ -53,6 +61,29 @@ export function BookingProvider({ children }) {
             console.log(eror)
         }
     }
+
+    useEffect(() => {
+        let unsubscribe
+        const channel = `databases.${DATABASE_ID}.collections.${COLLECTION_ID}.documents`
+
+        if (user) {
+            fetchBooking()
+
+            unsubscribe = client.subscribe(channel, (response) => {
+                const { payload, events} = response
+
+                if (events[0].includes('create')) {
+                    setBooking((prevBooking) => [...prevBooking, payload])
+                }
+            })
+        } else {
+            setBooking([])
+        }
+
+        return () => {
+            if (unsubscribe) unsubscribe()
+        }
+    }, [user])
 
     return (
         <BookingContext.Provider value={{ booking, fetchBooking, createBooking, deleteBooking }}>

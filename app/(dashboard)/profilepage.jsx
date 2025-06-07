@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Button, TouchableOpacity, SafeAreaView } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, SafeAreaView } from 'react-native';
 import React from 'react';
 import { useUser } from '../../hooks/useUser';
 import { router } from 'expo-router';
@@ -9,7 +9,7 @@ const ProfilePage = () => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      {/* Top bar with logout */}
+      {/* Logout Button */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.logoutWrapper} onPress={logout}>
           <Ionicons name="log-out-outline" size={24} color="#FF6B35" />
@@ -17,23 +17,31 @@ const ProfilePage = () => {
         </TouchableOpacity>
       </View>
 
-      {/* Main Content */}
-      <View style={styles.container}>
-        {/* Profile Circle */}
-        <View style={styles.profileCircle}>
-          <Ionicons name="person-circle-outline" size={100} color="#FFA552" />
-        </View>
-
-        {/* Name */}
+      {/* Profile Info */}
+      <View style={styles.profileContainer}>
+        <Ionicons name="person-circle-outline" size={100} color="#FFA552" />
         <Text style={styles.name}>{user.name}</Text>
-        <Text style={styles.email}>Email: {user.email}</Text>
+        <Text style={styles.email}>{user.email}</Text>
+      </View>
 
-        {/* Update Particulars Row */}
+      {/* Actions */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>My Account</Text>
+
         <TouchableOpacity
-          style={styles.updateButton}
+          style={styles.actionButton}
           onPress={() => router.push('./updateparticulars')}
         >
-          <Text style={styles.updateButtonText}>Update Particulars</Text>
+          <Ionicons name="create-outline" size={20} color="#FFF" style={styles.icon} />
+          <Text style={styles.buttonText}>Update Particulars</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.actionButton}
+          onPress={() => router.push('./userbookingsummary')}
+        >
+          <Ionicons name="calendar-outline" size={20} color="#FFF" style={styles.icon} />
+          <Text style={styles.buttonText}>View My Bookings</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -45,58 +53,63 @@ export default ProfilePage;
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#FFF5E1', // Cream background
+    backgroundColor: '#FFF5E1',
   },
   header: {
     alignItems: 'flex-end',
-    padding: 20,
+    padding: 16,
   },
-  container: {
-    flex: 1,
+  logoutWrapper: {
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 20,
+    gap: 6,
   },
-  profileCircle: {
-    width: 120,
-    height: 120,
-    borderRadius: 60,
-    backgroundColor: '#FFE5B4', // Light orange
+  logoutText: {
+    fontSize: 16,
+    color: '#FF6B35',
+    fontWeight: '500',
+  },
+  profileContainer: {
     alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 16,
+    marginTop: 10,
+    marginBottom: 20,
   },
   name: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#FF6B35',
-    marginBottom: 8,
+    marginTop: 8,
   },
   email: {
     fontSize: 16,
     color: '#555',
-    marginBottom: 30,
+    marginTop: 4,
   },
-  updateButton: {
-    backgroundColor: '#FF6B35',
-    paddingVertical: 12,
+  section: {
     paddingHorizontal: 24,
-    borderRadius: 25,
     marginTop: 20,
   },
-  updateButtonText: {
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 12,
+  },
+  actionButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FF6B35',
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    borderRadius: 15,
+    marginBottom: 16,
+  },
+  icon: {
+    marginRight: 12,
+  },
+  buttonText: {
     color: '#FFF',
     fontSize: 16,
     fontWeight: '600',
-  },
-  logoutWrapper: {
-  flexDirection: 'row',
-  alignItems: 'center',
-  gap: 6,
-  },
-  logoutText: {
-  fontSize: 16,
-  color: '#FF6B35',
-  fontWeight: '500',
   },
 });

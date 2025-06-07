@@ -34,10 +34,12 @@ const UpdateParticulars = () => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={styles.container}>
-        {/* Header with Back Button */}
+        
+        {/* Back Button */}
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.push('./profilepage')}>
+          <TouchableOpacity onPress={() => router.push('./profilepage')} style={styles.backButton}>
             <Ionicons name="arrow-back" size={24} color="#FF6B35" />
+            <Text style={styles.backText}>Back</Text>
           </TouchableOpacity>
         </View>
 
@@ -72,6 +74,16 @@ const styles = StyleSheet.create({
   header: {
     paddingHorizontal: 20,
     paddingTop: 10,
+  },
+  backButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  backText: {
+    marginLeft: 6,
+    fontSize: 16,
+    color: '#FF6B35',
+    fontWeight: '500',
   },
   content: {
     flex: 1,
