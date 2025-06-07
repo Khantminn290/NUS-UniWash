@@ -1,34 +1,26 @@
 import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  TextInput,
-  ScrollView,
-  Pressable,
-  StyleSheet,
-  Alert,
-  Keyboard,
-  TouchableWithoutFeedback,
-  SafeAreaView,
-} from 'react-native';
+import {View, Text, TextInput, ScrollView, Pressable,
+         StyleSheet, Alert, Keyboard, TouchableWithoutFeedback, SafeAreaView} from 'react-native';
 import dayjs from 'dayjs';
 import { useUser } from '../../hooks/useUser';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
+import { useBooking } from '../../hooks/useBooking';
 
 const BookingPage = () => {
   const { user } = useUser();
-  const [machineNumber, setMachineNumber] = useState(null);
-  const [selectedSlot, setSelectedSlot] = useState(null);
-  const [selectedDate, setSelectedDate] = useState(null);
+  const [machineNumber, setMachineNumber] = useState("");
+  const [selectedSlot, setSelectedSlot] = useState("");
+  const [selectedDate, setSelectedDate] = useState("");
 
-  const machines = ['M1', 'M2', 'M3'];
+  const { createBooking } = useBooking();
+
+  const machines = ["M1", "M2", "M3"];
   const timeSlots = [
     '09:00 - 10:00', '10:00 - 11:00', '11:00 - 12:00', '12:00 - 13:00',
     '13:00 - 14:00', '14:00 - 15:00', '15:00 - 16:00', '16:00 - 17:00',
     '17:00 - 18:00', '18:00 - 19:00', '19:00 - 20:00', '20:00 - 21:00',
   ];
-
   const daysOfWeek = Array.from({ length: 7 }, (_, i) => {
     const date = dayjs().add(i, 'day');
     return {
@@ -37,23 +29,52 @@ const BookingPage = () => {
     };
   });
 
-  const handleBooking = () => {
+  const handleMachineSelection = (machine) => {
+    setMachineNumber(machine);
+  };
+
+  const handleDateSelection = (date) => {
+    setSelectedDate(date);
+  };
+
+  const handleSlotSelection = (slot) => {
+    setSelectedSlot(slot);
+  };
+
+  const handleBooking = async () => {
     if (!machineNumber || !selectedSlot || !selectedDate) {
       Alert.alert('Missing Info', 'Please select machine, date, and time slot.');
       return;
     }
-
+    
     Alert.alert(
       'Booking Confirmed',
       `User: ${user?.name}\nMachine: ${machineNumber}\nDate: ${selectedDate}\nSlot: ${selectedSlot}`
     );
+
+    await createBooking(
+      machineNumber,
+      selectedDate,
+      selectedSlot
+    );
+
+    // reset fields
+    setMachineNumber("");
+    setSelectedSlot("");
+    setSelectedDate("");
+
+    // redirect
+    router.push('./bookingschedule');
   };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={styles.safeArea}>
         {/* Back Button */}
-        <Pressable style={styles.backButton} onPress={() => router.push('./bookingschedule')}>
+        <Pressable 
+          style={styles.backButton} 
+          onPress={() => router.push('./bookingschedule')}
+        >
           <Ionicons name="arrow-back" size={24} color="#FF6B35" />
           <Text style={styles.backText}>Back</Text>
         </Pressable>
@@ -70,22 +91,22 @@ const BookingPage = () => {
 
           <Text style={styles.label}>Select Machine</Text>
           <View style={styles.buttonRow}>
-            {machines.map((m) => (
+            {machines.map((machine) => (
               <Pressable
-                key={m}
-                onPress={() => setMachineNumber(m)}
+                key={machine}
+                onPress={() => handleMachineSelection(machine)}
                 style={[
                   styles.machineButton,
-                  machineNumber === m && styles.selectedButton,
+                  machineNumber === machine && styles.selectedButton,
                 ]}
               >
                 <Text
                   style={[
                     styles.buttonText,
-                    machineNumber === m && { color: '#fff' },
+                    machineNumber === machine && { color: '#fff' },
                   ]}
                 >
-                  {m}
+                  {machine}
                 </Text>
               </Pressable>
             ))}
@@ -96,7 +117,7 @@ const BookingPage = () => {
             {daysOfWeek.map((day) => (
               <Pressable
                 key={day.value}
-                onPress={() => setSelectedDate(day.value)}
+                onPress={() => handleDateSelection(day.value)}
                 style={[
                   styles.slotButton,
                   selectedDate === day.value && styles.selectedSlot,
@@ -116,10 +137,10 @@ const BookingPage = () => {
 
           <Text style={styles.label}>Select Time Slot</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.horizontalScroll}>
-            {timeSlots.map((slot, idx) => (
+            {timeSlots.map((slot) => (
               <Pressable
-                key={idx}
-                onPress={() => setSelectedSlot(slot)}
+                key={slot}
+                onPress={() => handleSlotSelection(slot)}
                 style={[
                   styles.slotButton,
                   selectedSlot === slot && styles.selectedSlot,
