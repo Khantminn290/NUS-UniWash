@@ -56,7 +56,11 @@ export function BookingProvider({ children }) {
 
     async function deleteBooking(id) {
         try {
-
+            await databases.deleteDocument(
+                DATABASE_ID,
+                COLLECTION_ID,
+                id
+            )
         } catch (error) {
             console.log(eror)
         }
@@ -74,6 +78,10 @@ export function BookingProvider({ children }) {
 
                 if (events[0].includes('create')) {
                     setBooking((prevBooking) => [...prevBooking, payload])
+                }
+
+                if (events[0].includes('delete')) {
+                    setBooking((prevBooking) => prevBooking.filter((booking) => booking.$id !== payload.$id))
                 }
             })
         } else {

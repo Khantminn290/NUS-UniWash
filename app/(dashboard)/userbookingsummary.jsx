@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, FlatList, Pressable } from 'react-native';
+import { StyleSheet, Text, View, FlatList, Pressable, Alert } from 'react-native';
 import React from 'react';
 import { useBooking } from '../../hooks/useBooking';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -6,7 +6,22 @@ import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 
 const UserBookingSummary = () => {
-  const { booking } = useBooking();
+  const { booking, deleteBooking } = useBooking();
+
+  const handleDelete = (id) => {
+    Alert.alert(
+      "Cancel Booking",
+      "Are you sure you want to delete this booking?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: () => deleteBooking(id),
+        },
+      ]
+    );
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -22,14 +37,17 @@ const UserBookingSummary = () => {
         data={booking}
         keyExtractor={(item) => item.$id}
         contentContainerStyle={styles.list}
-        ListEmptyComponent={
-          <Text style={styles.emptyText}>No bookings yet.</Text>
-        }
+        ListEmptyComponent={<Text style={styles.emptyText}>No bookings yet.</Text>}
         renderItem={({ item }) => (
           <View style={styles.card}>
-            <Text style={styles.cardText}>Machine: {item.machineNumber}</Text>
-            <Text style={styles.cardText}>Date: {item.selectedDate}</Text>
-            <Text style={styles.cardText}>Time Slot: {item.selectedSlot}</Text>
+            <View style={styles.cardTextContainer}>
+              <Text style={styles.cardText}>Machine: {item.machineNumber}</Text>
+              <Text style={styles.cardText}>Date: {item.selectedDate}</Text>
+              <Text style={styles.cardText}>Time Slot: {item.selectedSlot}</Text>
+            </View>
+            <Pressable onPress={() => handleDelete(item.$id)}>
+              <Ionicons name="trash" size={24} color="#FF6B35" />
+            </Pressable>
           </View>
         )}
       />
@@ -75,6 +93,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.05,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  cardTextContainer: {
+    flex: 1,
   },
   cardText: {
     fontSize: 16,
