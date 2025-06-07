@@ -20,7 +20,7 @@ export function BookingProvider({ children }) {
         }
     }
 
-    async function createBooking(machineNumber, selectedDate, selectedSlot) {
+    async function createBooking(machineNumber, selectedDate, selectedSlot, userName) {
         try {
             const newBooking = await databases.createDocument(
                 DATABASE_ID,
@@ -30,7 +30,8 @@ export function BookingProvider({ children }) {
                 machineNumber,
                 selectedDate,
                 selectedSlot,
-                userId: user.$id
+                userId: user.$id,
+                userName
                 },
                 [
                     Permission.read(Role.user(user.$id)),

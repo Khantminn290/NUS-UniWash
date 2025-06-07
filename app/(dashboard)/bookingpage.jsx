@@ -29,33 +29,18 @@ const BookingPage = () => {
     };
   });
 
-  const handleMachineSelection = (machine) => {
-    setMachineNumber(machine);
-  };
-
-  const handleDateSelection = (date) => {
-    setSelectedDate(date);
-  };
-
-  const handleSlotSelection = (slot) => {
-    setSelectedSlot(slot);
-  };
-
   const handleBooking = async () => {
     if (!machineNumber || !selectedSlot || !selectedDate) {
       Alert.alert('Missing Info', 'Please select machine, date, and time slot.');
       return;
     }
-    
+
+    await createBooking(machineNumber, selectedDate, selectedSlot, user.name);
+
+    // send an alert once the booking has been created
     Alert.alert(
       'Booking Confirmed',
       `User: ${user?.name}\nMachine: ${machineNumber}\nDate: ${selectedDate}\nSlot: ${selectedSlot}`
-    );
-
-    await createBooking(
-      machineNumber,
-      selectedDate,
-      selectedSlot
     );
 
     // reset fields
@@ -63,7 +48,7 @@ const BookingPage = () => {
     setSelectedSlot("");
     setSelectedDate("");
 
-    // redirect
+    // redirect once a booking has been made
     router.push('./bookingschedule');
   };
 
@@ -94,7 +79,7 @@ const BookingPage = () => {
             {machines.map((machine) => (
               <Pressable
                 key={machine}
-                onPress={() => handleMachineSelection(machine)}
+                onPress={() => setMachineNumber(machine)}
                 style={[
                   styles.machineButton,
                   machineNumber === machine && styles.selectedButton,
@@ -117,7 +102,7 @@ const BookingPage = () => {
             {daysOfWeek.map((day) => (
               <Pressable
                 key={day.value}
-                onPress={() => handleDateSelection(day.value)}
+                onPress={() => setSelectedDate(day.value)}
                 style={[
                   styles.slotButton,
                   selectedDate === day.value && styles.selectedSlot,
@@ -140,7 +125,7 @@ const BookingPage = () => {
             {timeSlots.map((slot) => (
               <Pressable
                 key={slot}
-                onPress={() => handleSlotSelection(slot)}
+                onPress={() => setSelectedSlot(slot)}
                 style={[
                   styles.slotButton,
                   selectedSlot === slot && styles.selectedSlot,
