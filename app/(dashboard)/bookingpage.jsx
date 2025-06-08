@@ -2,10 +2,15 @@ import React, { useState } from 'react';
 import {View, Text, TextInput, ScrollView, Pressable,
          StyleSheet, Alert, Keyboard, TouchableWithoutFeedback, SafeAreaView} from 'react-native';
 import dayjs from 'dayjs';
+import { databases, client } from "../../lib/appwrite";
 import { useUser } from '../../hooks/useUser';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useBooking } from '../../hooks/useBooking';
+import { ID, Permission, Query, Role } from "react-native-appwrite";
+
+const DATABASE_ID = "6843fa14001fa0d2b7e6"
+const COLLECTION_ID = "6843fa25003cb5d52a58"
 
 const BookingPage = () => {
   const { user } = useUser();
@@ -34,7 +39,21 @@ const BookingPage = () => {
       Alert.alert('Missing Info', 'Please select machine, date, and time slot.');
       return;
     }
-
+    try {
+      const existing = await databases.listDocuments(
+                  DATABASE_ID,
+                  COLLECTION_ID,
+                  [
+                      Query.equal('machineNumber', machineNumber),
+                      Query.equal('selectedDate', selectedDate),
+                      Query.equal('selectedSlot', selectedSlot),
+                  ]
+              );
+              console.log("Existing bookings found:", existing.documents.length);
+      
+              if (existing.documents.length > 0) {
+                  throw new Error("This time slot has already been booked.");
+              }
     await createBooking(machineNumber, selectedDate, selectedSlot, user.name);
 
     // send an alert once the booking has been created
@@ -50,6 +69,9 @@ const BookingPage = () => {
 
     // redirect once a booking has been made
     router.push('./bookingschedule');
+  } catch (error) {
+    Alert.alert("Booking Failed", error.message);
+  }
   };
 
   return (

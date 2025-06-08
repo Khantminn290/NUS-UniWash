@@ -31,6 +31,7 @@ export function BookingProvider({ children }) {
 
     async function createBooking(machineNumber, selectedDate, selectedSlot, userName) {
         try {
+            
             const newBooking = await databases.createDocument(
                 DATABASE_ID,
                 COLLECTION_ID,
