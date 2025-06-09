@@ -28,7 +28,7 @@ export function BookingProvider({ children }) {
             console.log(error)
         }
     }
-    
+
     async function createBooking(machineNumber, selectedDate, selectedSlot, userName) {
         try {
             
@@ -76,6 +76,9 @@ export function BookingProvider({ children }) {
 
             unsubscribe = client.subscribe(channel, (response) => {
                 const { payload, events} = response
+
+            // Only process if the booking belongs to current user
+            if (payload.userId !== user.$id) return;
 
                 if (events[0].includes('create')) {
                     setBooking((prevBooking) => [...prevBooking, payload])
