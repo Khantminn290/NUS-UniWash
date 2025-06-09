@@ -1,22 +1,25 @@
-import React, { useState } from 'react';
-import {View, Text, TextInput, ScrollView, Pressable,
-         StyleSheet, Alert, Keyboard, TouchableWithoutFeedback, SafeAreaView} from 'react-native';
+import React, { useState, useEffect } from 'react';
+import {
+  View, Text, TextInput, ScrollView, Pressable,
+  StyleSheet, Alert, Keyboard, TouchableWithoutFeedback, SafeAreaView
+} from 'react-native';
 import dayjs from 'dayjs';
-import { databases, client } from "../../lib/appwrite";
+import { databases } from "../../lib/appwrite";
 import { useUser } from '../../hooks/useUser';
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useBooking } from '../../hooks/useBooking';
-import { ID, Permission, Query, Role } from "react-native-appwrite";
+import { Query } from "react-native-appwrite";
 
-const DATABASE_ID = "6843fa14001fa0d2b7e6"
-const COLLECTION_ID = "6843fa25003cb5d52a58"
+const DATABASE_ID = "6843fa14001fa0d2b7e6";
+const COLLECTION_ID = "6843fa25003cb5d52a58";
 
 const BookingPage = () => {
   const { user } = useUser();
   const [machineNumber, setMachineNumber] = useState("");
   const [selectedSlot, setSelectedSlot] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
+  const [bookedSlots, setBookedSlots] = useState([]);
 
   const { createBooking } = useBooking();
 
@@ -34,52 +37,74 @@ const BookingPage = () => {
     };
   });
 
+  useEffect(() => {
+    const fetchBookedSlots = async () => {
+      if (!machineNumber || !selectedDate) {
+        setBookedSlots([]);
+        return;
+      }
+      try {
+        const res = await databases.listDocuments(
+          DATABASE_ID,
+          COLLECTION_ID,
+          [
+            Query.equal('machineNumber', machineNumber),
+            Query.equal('selectedDate', selectedDate),
+          ]
+        );
+        const slots = res.documents.map(doc => doc.selectedSlot);
+        setBookedSlots(slots);
+      } catch (error) {
+        console.error("Error fetching booked slots:", error);
+      }
+    };
+    fetchBookedSlots();
+  }, [machineNumber, selectedDate]);
+
   const handleBooking = async () => {
     if (!machineNumber || !selectedSlot || !selectedDate) {
       Alert.alert('Missing Info', 'Please select machine, date, and time slot.');
       return;
     }
+
     try {
       const existing = await databases.listDocuments(
-                  DATABASE_ID,
-                  COLLECTION_ID,
-                  [
-                      Query.equal('machineNumber', machineNumber),
-                      Query.equal('selectedDate', selectedDate),
-                      Query.equal('selectedSlot', selectedSlot),
-                  ]
-              );
-              console.log("Existing bookings found:", existing.documents.length);
-      
-              if (existing.documents.length > 0) {
-                  throw new Error("This time slot has already been booked.");
-              }
-    await createBooking(machineNumber, selectedDate, selectedSlot, user.name);
+        DATABASE_ID,
+        COLLECTION_ID,
+        [
+          Query.equal('machineNumber', machineNumber),
+          Query.equal('selectedDate', selectedDate),
+          Query.equal('selectedSlot', selectedSlot),
+        ]
+      );
 
-    // send an alert once the booking has been created
-    Alert.alert(
-      'Booking Confirmed',
-      `User: ${user?.name}\nMachine: ${machineNumber}\nDate: ${selectedDate}\nSlot: ${selectedSlot}`
-    );
+      if (existing.documents.length > 0) {
+        throw new Error("This time slot has already been booked.");
+      }
 
-    // reset fields
-    setMachineNumber("");
-    setSelectedSlot("");
-    setSelectedDate("");
+      await createBooking(machineNumber, selectedDate, selectedSlot, user.name);
 
-    // redirect once a booking has been made
-    router.push('./bookingschedule');
-  } catch (error) {
-    Alert.alert("Booking Failed", error.message);
-  }
+      Alert.alert(
+        'Booking Confirmed',
+        `User: ${user?.name}\nMachine: ${machineNumber}\nDate: ${selectedDate}\nSlot: ${selectedSlot}`
+      );
+
+      setMachineNumber("");
+      setSelectedSlot("");
+      setSelectedDate("");
+
+      router.push('./bookingschedule');
+    } catch (error) {
+      Alert.alert("Booking Failed", error.message);
+    }
   };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={styles.safeArea}>
         {/* Back Button */}
-        <Pressable 
-          style={styles.backButton} 
+        <Pressable
+          style={styles.backButton}
           onPress={() => router.push('./bookingschedule')}
         >
           <Ionicons name="arrow-back" size={24} color="#FF6B35" />
@@ -144,25 +169,33 @@ const BookingPage = () => {
 
           <Text style={styles.label}>Select Time Slot</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.horizontalScroll}>
-            {timeSlots.map((slot) => (
-              <Pressable
-                key={slot}
-                onPress={() => setSelectedSlot(slot)}
-                style={[
-                  styles.slotButton,
-                  selectedSlot === slot && styles.selectedSlot,
-                ]}
-              >
-                <Text
+            {timeSlots.map((slot) => {
+              const isBooked = bookedSlots.includes(slot);
+              const isSelected = selectedSlot === slot;
+              return (
+                <Pressable
+                  key={slot}
+                  onPress={() => setSelectedSlot(slot)}
                   style={[
-                    styles.buttonText,
-                    selectedSlot === slot && { color: '#fff' },
+                    styles.slotButton,
+                    isBooked
+                      ? { backgroundColor: '#E74C3C' }
+                      : isSelected
+                        ? styles.selectedSlot 
+                        : { backgroundColor: '#2ECC71' }
                   ]}
                 >
-                  {slot}
-                </Text>
-              </Pressable>
-            ))}
+                  <Text
+                    style={[
+                      styles.buttonText,
+                      (isBooked || isSelected) && { color: '#fff' },
+                    ]}
+                  >
+                    {slot}
+                  </Text>
+                </Pressable>
+              );
+            })}
           </ScrollView>
 
           <Pressable style={styles.bookButton} onPress={handleBooking}>
