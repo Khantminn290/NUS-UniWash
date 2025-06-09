@@ -28,7 +28,7 @@ export function BookingProvider({ children }) {
             console.log(error)
         }
     }
-
+    
     async function createBooking(machineNumber, selectedDate, selectedSlot, userName) {
         try {
             

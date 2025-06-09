@@ -12,16 +12,7 @@ const BookingSchedule = () => {
     <SafeAreaView style={styles.safeArea}>
       {/* Header with title and refresh button */}
       <View style={styles.header}>
-        <Pressable style={styles.backButton} onPress={() => router.back()}>
-          <Ionicons name="arrow-back" size={24} color="#FF6B35" />
-          <Text style={styles.backText}>Back</Text>
-        </Pressable>
-        
         <Text style={styles.title}>All Bookings</Text>
-        
-        <Pressable onPress={getAllBookings} style={styles.refreshButton}>
-          <Ionicons name="refresh" size={24} color="#FF6B35" />
-        </Pressable>
       </View>
 
       {/* Book Button */}
