@@ -47,7 +47,6 @@ export function BookingProvider({ children }) {
                     Permission.read(Role.user(user.$id)),
                     Permission.update(Role.user(user.$id)),
                     Permission.delete(Role.user(user.$id))
-
                 ]
             )
             console.log("New booking created:", newBooking);
