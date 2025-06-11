@@ -2,7 +2,6 @@ import { StyleSheet, Text, View, FlatList, Pressable, Alert } from 'react-native
 import React from 'react';
 import { useAdminBooking } from '../../hooks/useAdminBooking';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 
 const BookingSchedule = () => {
@@ -52,8 +51,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF5E1',
   },
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
     padding: 16,
   },
@@ -71,10 +68,6 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '700',
     color: '#FF6B35',
-  },
-  refreshButton: {
-    padding: 8,
-  borderRadius: 20,
   },
   bookButton: {
     backgroundColor: '#FF6B35',

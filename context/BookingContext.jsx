@@ -14,24 +14,29 @@ export function BookingProvider({ children }) {
 
     // this function only fetches the current logged in user's bookings
     async function fetchBooking() {
-        try {
-            const response = await databases.listDocuments(
-                DATABASE_ID,
-                COLLECTION_ID,
-                [
-                    Query.equal('userId', user.$id) // grab all the booking records in the collection where this condition is true
-                ]
-            )
-            setBooking(response.documents)
-            console.log(response.documents)
-        } catch (error) {
-            console.log(error)
-        }
+    try {
+        // Get today's date at midnight (start of day)
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const todayISO = today.toISOString().slice(0, 10); // YYYY-MM-DD only, since selectedDate is probably date string
+
+        const response = await databases.listDocuments(
+            DATABASE_ID,
+            COLLECTION_ID,
+            [
+                Query.greaterThanEqual('selectedDate', todayISO),
+                Query.equal('userId', user.$id),
+            ]
+        );
+        setBooking(response.documents);
+        console.log(response.documents);
+    } catch (error) {
+        console.log(error);
     }
+}
 
     async function createBooking(machineNumber, selectedDate, selectedSlot, userName) {
         try {
-            
             const newBooking = await databases.createDocument(
                 DATABASE_ID,
                 COLLECTION_ID,
@@ -68,34 +73,42 @@ export function BookingProvider({ children }) {
     }
 
     useEffect(() => {
-        let unsubscribe
-        const channel = `databases.${DATABASE_ID}.collections.${COLLECTION_ID}.documents`
+    let unsubscribe;
+    const channel = `databases.${DATABASE_ID}.collections.${COLLECTION_ID}.documents`;
 
-        if (user) {
-            fetchBooking()
+    if (user) {
+        fetchBooking();
 
-            unsubscribe = client.subscribe(channel, (response) => {
-                const { payload, events} = response
+        unsubscribe = client.subscribe(channel, (response) => {
+            const { payload, events } = response;
 
             // Only process if the booking belongs to current user
             if (payload.userId !== user.$id) return;
 
-                if (events[0].includes('create')) {
-                    setBooking((prevBooking) => [...prevBooking, payload])
-                }
+            // Get today's date at midnight to compare
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const todayISO = today.toISOString().slice(0, 10);
 
-                if (events[0].includes('delete')) {
-                    setBooking((prevBooking) => prevBooking.filter((booking) => booking.$id !== payload.$id))
+            // Only add if the booking is for today or later
+            if (events[0].includes('create')) {
+                if (payload.selectedDate >= todayISO) {
+                    setBooking((prevBooking) => [...prevBooking, payload]);
                 }
-            })
+            }
+
+            if (events[0].includes('delete')) {
+                setBooking((prevBooking) => prevBooking.filter((booking) => booking.$id !== payload.$id));
+            }
+        });
         } else {
-            setBooking([])
+            setBooking([]);
         }
 
         return () => {
-            if (unsubscribe) unsubscribe()
-        }
-    }, [user])
+            if (unsubscribe) unsubscribe();
+        };
+    }, [user]);
 
     return (
         <BookingContext.Provider value={{ booking, fetchBooking, createBooking, deleteBooking }}>
