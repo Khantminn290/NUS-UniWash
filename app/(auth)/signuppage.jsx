@@ -1,4 +1,4 @@
- import { View, Text, TextInput, Pressable, StyleSheet, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { View, Text, TextInput, Pressable, StyleSheet, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { useUser } from '../../hooks/useUser';
@@ -22,9 +22,9 @@ export default function SignupPage() {
 
   const handleSubmit = async () => {
     setError(null);
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      setError('Please enter a valid email address.');
+    const nusemailRegex = /^e\d{7}@u\.nus\.edu$/;
+    if (!nusemailRegex.test(email)) {
+      setError('Please enter a valid NUS email address. (e.g., e1234567@u.nus.edu).');
       return;
     }
     const validationError = validatePassword(password);
