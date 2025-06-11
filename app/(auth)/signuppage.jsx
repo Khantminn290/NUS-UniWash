@@ -35,6 +35,7 @@ export default function SignupPage() {
     try {
       await register(email, password, name);
       console.log('current user is: ', user);
+      //router.push("/verifyemail");
     } catch (error) {
       setError(error.message);
     }
