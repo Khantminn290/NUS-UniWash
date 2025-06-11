@@ -2,6 +2,7 @@ import { Slot } from "expo-router";
 import { UserProvider } from "../context/UserContext";
 import { BookingProvider } from "../context/BookingContext";
 import { AdminBookingProvider } from "../context/AdminBookingContext";
+import { WashingMachineProvider } from "../context/WashingMachineContext";
 
 export default function RootLayout() {
 
@@ -9,7 +10,9 @@ export default function RootLayout() {
       <UserProvider>
         <BookingProvider>
           <AdminBookingProvider>
-            <Slot />
+            <WashingMachineProvider>
+              <Slot />
+            </WashingMachineProvider>
           </AdminBookingProvider>
         </BookingProvider>
       </UserProvider>
