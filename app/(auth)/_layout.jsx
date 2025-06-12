@@ -9,14 +9,15 @@ export default function AuthLayout() {
   const router = useRouter();
 
   // Redirect authenticated users to main dashboard
-  useEffect(() => {
+ useEffect(() => {
     if (authChecked && user !== null) {
       router.replace("/mainpage");
     }
   }, [authChecked, user]);
 
+
   // Deep link handler for email verification
- /* useEffect(() => {
+  useEffect(() => {
     const handleDeepLink = ({ url }) => {
       const parsed = Linking.parse(url);
       if (parsed?.path === "verify" && parsed.queryParams?.userId && parsed.queryParams?.secret) {
@@ -38,7 +39,7 @@ export default function AuthLayout() {
     });
 
     return () => subscription.remove();
-  }, []);*/
+  }, []);
 
   if (!authChecked) {
     return <ThemedLoader />;
