@@ -2,6 +2,7 @@ import { View, Text, TextInput, Pressable, StyleSheet, TouchableWithoutFeedback,
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { useUser } from '../../hooks/useUser';
+import { account } from "../../lib/appwrite";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -34,6 +35,8 @@ export default function SignupPage() {
     }
     try {
       await register(email, password, name);
+      await account.createVerification("exp://192.168.1.1:8081/--/auth/verifyemail"); // new line added for authentication
+      alert("Verification email sent! Please check your inbox."); // new line added for authentication 
       console.log('current user is: ', user);
       router.push("/verifyemail"); // new line added for authentication
     } catch (error) {
