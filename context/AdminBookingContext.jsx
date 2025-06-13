@@ -12,29 +12,34 @@ export function AdminBookingProvider({ children }) {
     const [booking, setBooking] = useState([])
     const { user } = useUser()
 
-    async function getAllBookings() {
+async function getAllBookings() {
   try {
     const now = new Date();
-    const todayStr = now.toISOString().split('T')[0]; // e.g. "2025-06-11"
-    const currentTimeStr = now.toTimeString().slice(0, 5); // e.g. "14:30"
+    const todayStr = now.toISOString().split('T')[0]; // "2025-06-12"
+    const currentTimeStr = now.toTimeString().slice(0, 5); // "HH:mm"
 
     const response = await databases.listDocuments(
       DATABASE_ID,
       COLLECTION_ID,
       [
-        Query.greaterThanEqual('selectedDate', todayStr), // only today or future dates
+        Query.greaterThanEqual('selectedDate', todayStr),
         Query.orderAsc('selectedDate'),
         Query.orderAsc('selectedSlot'),
-        Query.limit(100)
+        Query.limit(100),
       ]
     );
 
-    // Filter out bookings today with slot before current time
     const filtered = response.documents.filter(booking => {
-      if (booking.selectedDate === todayStr) {
-        return booking.selectedSlot >= currentTimeStr;
+      const { selectedDate, selectedSlot } = booking;
+
+      if (selectedDate > todayStr) return true;
+
+      if (selectedDate === todayStr) {
+        const [startTime] = selectedSlot.split('-').map(s => s.trim()); // "09:00"
+        return startTime <= currentTimeStr;
       }
-      return true; // future dates are included
+
+      return false; // Ignore past dates
     });
 
     setBooking(filtered);
@@ -44,31 +49,29 @@ export function AdminBookingProvider({ children }) {
   }
 }
 
-    useEffect(() => {
+useEffect(() => {
   let unsubscribe;
   const channel = `databases.${DATABASE_ID}.collections.${COLLECTION_ID}.documents`;
 
   if (user) {
-    getAllBookings();
-
-    const now = new Date();
-    const todayStr = now.toISOString().split('T')[0]; // "YYYY-MM-DD"
-    const currentTimeStr = now.toTimeString().slice(0, 5); // "HH:mm"
+    getAllBookings(); // Initial fetch
 
     unsubscribe = client.subscribe(channel, (response) => {
       const { payload, events } = response;
 
-      // Check if the booking is valid (date/time >= now)
-      const bookingDate = payload.selectedDate;
-      const bookingSlot = payload.selectedSlot;
+      const now = new Date();
+      const todayStr = now.toISOString().split('T')[0]; // "YYYY-MM-DD"
+      const currentTimeStr = now.toTimeString().slice(0, 5); // "HH:mm"
 
-      const isBookingValid = 
+      const bookingDate = payload.selectedDate;
+      const [startTime] = payload.selectedSlot.split('-').map((s) => s.trim());
+
+      const isBookingValid =
         bookingDate > todayStr ||
-        (bookingDate === todayStr && bookingSlot >= currentTimeStr);
+        (bookingDate === todayStr && startTime >= currentTimeStr);
 
       if (!isBookingValid) {
-        // Ignore bookings that are past the current date/time
-        return;
+        return; // Ignore outdated bookings
       }
 
       if (events[0].includes('create')) {
@@ -76,7 +79,15 @@ export function AdminBookingProvider({ children }) {
       }
 
       if (events[0].includes('delete')) {
-        setBooking((prevBooking) => prevBooking.filter((b) => b.$id !== payload.$id));
+        setBooking((prevBooking) =>
+          prevBooking.filter((b) => b.$id !== payload.$id)
+        );
+      }
+
+      if (events[0].includes('update')) {
+        setBooking((prevBooking) =>
+          prevBooking.map((b) => (b.$id === payload.$id ? payload : b))
+        );
       }
     });
   } else {

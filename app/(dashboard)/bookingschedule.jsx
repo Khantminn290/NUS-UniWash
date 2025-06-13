@@ -4,8 +4,8 @@ import { useAdminBooking } from '../../hooks/useAdminBooking';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 
-const BookingSchedule = () => {
-  const { booking, getAllBookings} = useAdminBooking();
+const bookingschedule = () => {
+  const { booking } = useAdminBooking();
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -43,7 +43,7 @@ const BookingSchedule = () => {
   );
 };
 
-export default BookingSchedule;
+export default bookingschedule;
 
 const styles = StyleSheet.create({
   safeArea: {
