@@ -31,7 +31,7 @@ const BookingPage = () => {
     '17:00 - 18:00', '18:00 - 19:00', '19:00 - 20:00', '20:00 - 21:00',
   ];
   const daysOfWeek = Array.from({ length: 8 }, (_, i) => {
-    const date = dayjs().add(i-1, 'day');
+    const date = dayjs().add(i -1, 'day');
     return {
       label: date.format('ddd (MMM D)'),
       value: date.format('YYYY-MM-DD'),

@@ -43,6 +43,20 @@ useEffect(() => {
     unsubscribe = client.subscribe(channel, (response) => {
       const { payload, events } = response;
 
+      const now = new Date();
+      const todayStr = now.toISOString().split('T')[0]; // "YYYY-MM-DD"
+      const currentTimeStr = now.toTimeString().slice(0, 5); // "HH:mm"
+
+      const { selectedDate, selectedSlot } = payload;
+      const [startTime, endTime] = selectedSlot.split(' - ').map((s) => s.trim());
+
+      const isOngoing =
+        selectedDate === todayStr &&
+        currentTimeStr >= startTime &&
+        currentTimeStr <= endTime;
+
+      if (!isOngoing) return; // Ignore irrelevant bookings
+
       if (events[0].includes('create')) {
         setBooking((prevBooking) => [...prevBooking, payload]);
       }
@@ -65,6 +79,25 @@ useEffect(() => {
     if (unsubscribe) unsubscribe();
   };
 }, [user]);
+
+// auto refreshes every new day so that old bookings will not be displayed
+    useEffect(() => {
+        const now = new Date();
+
+        // Calculate time left until midnight
+        const timeUntilMidnight = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate() + 1, // next day
+            0, 0, 0, 0 // 00:00:00
+        ) - now;
+
+        const timeout = setTimeout(() => {
+            getAllBookings(); 
+        }, timeUntilMidnight);
+
+        return () => clearTimeout(timeout);
+    }, []);
 
     return (
         <AdminBookingContext.Provider value={{ booking, getAllBookings}}>

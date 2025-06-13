@@ -82,6 +82,20 @@ export function BookingProvider({ children }) {
             // Only process if the booking belongs to current user
             if (payload.userId !== user.$id) return;
 
+            const now = new Date();
+            const todayStr = now.toISOString().split('T')[0]; // "YYYY-MM-DD"
+            const currentTimeStr = now.toTimeString().slice(0, 5); // "HH:mm"
+
+            const { selectedDate, selectedSlot } = payload;
+            const [startTime, endTime] = selectedSlot.split(' - ').map((s) => s.trim());
+
+            const isOngoing =
+                selectedDate === todayStr &&
+                currentTimeStr >= startTime &&
+                currentTimeStr <= endTime;
+
+            if (!isOngoing) return; // Ignore irrelevant bookings
+
             if (events[0].includes('create')) {
                 setBooking((prevBooking) => [...prevBooking, payload]);
             }
@@ -98,6 +112,25 @@ export function BookingProvider({ children }) {
             if (unsubscribe) unsubscribe();
         };
     }, [user]);
+
+    // auto refreshes every new day so that old bookings will not be displayed
+    useEffect(() => {
+        const now = new Date();
+
+        // Calculate time left until midnight
+        const timeUntilMidnight = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate() + 1, // next day
+            0, 0, 0, 0 // 00:00:00
+        ) - now;
+
+        const timeout = setTimeout(() => {
+            fetchBooking(); // refresh bookings at midnight
+        }, timeUntilMidnight);
+
+        return () => clearTimeout(timeout);
+    }, []);
 
     return (
         <BookingContext.Provider value={{ booking, fetchBooking, createBooking, deleteBooking }}>
