@@ -79,6 +79,18 @@ export function BookingProvider({ children }) {
         unsubscribe = client.subscribe(channel, (response) => {
             const { payload, events } = response;
 
+            const now = new Date();
+            const todayStr = now.toISOString().split('T')[0]; // "YYYY-MM-DD"
+            const currentTimeStr = now.toTimeString().slice(0, 5); // "HH:mm"
+
+            const { selectedDate, selectedSlot } = payload;
+            const [startTime, endTime] = selectedSlot.split(' - ').map((s) => s.trim());
+
+            const isOngoing =
+                selectedDate >= todayStr;
+
+            if (!isOngoing) return; // Ignore irrelevant bookings
+
             if (events[0].includes('create')) {
                 setBooking((prevBooking) => [...prevBooking, payload]);
             }
