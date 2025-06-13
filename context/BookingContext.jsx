@@ -108,6 +108,25 @@ export function BookingProvider({ children }) {
         };
     }, [user]);
 
+    useEffect(() => {
+        const now = new Date();
+
+        // Calculate time left until midnight
+        const timeUntilMidnight = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate() + 1, // next day
+            0, 0, 0, 0 // 00:00:00
+        ) - now;
+
+        const timeout = setTimeout(() => {
+            fetchBooking(); // refresh bookings at midnight
+        }, timeUntilMidnight);
+
+        return () => clearTimeout(timeout);
+        }, []);
+
+
     return (
         <BookingContext.Provider value={{ booking, fetchBooking, createBooking, deleteBooking }}>
             {children}

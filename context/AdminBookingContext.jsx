@@ -78,6 +78,24 @@ useEffect(() => {
   };
 }, [user]);
 
+useEffect(() => {
+        const now = new Date();
+
+        // Calculate time left until midnight
+        const timeUntilMidnight = new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate() + 1, // next day
+            0, 0, 0, 0 // 00:00:00
+        ) - now;
+
+        const timeout = setTimeout(() => {
+            getAllBookings(); // refresh bookings at midnight
+        }, timeUntilMidnight);
+
+        return () => clearTimeout(timeout);
+        }, []);
+
     return (
         <AdminBookingContext.Provider value={{ booking, getAllBookings}}>
             {children}
