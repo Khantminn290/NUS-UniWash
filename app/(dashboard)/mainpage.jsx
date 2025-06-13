@@ -26,7 +26,11 @@ const mainpage = () => {
           return (
             <View>
               <Text>
+                Machines currently being used:
                 {item.machineNumber}
+              </Text>
+              <Text>
+                {item.selectedSlot}
               </Text>
             </View>
           );

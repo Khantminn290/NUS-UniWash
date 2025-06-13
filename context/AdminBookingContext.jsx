@@ -15,34 +15,18 @@ export function AdminBookingProvider({ children }) {
 async function getAllBookings() {
   try {
     const now = new Date();
-    const todayStr = now.toISOString().split('T')[0]; // "2025-06-12"
-    const currentTimeStr = now.toTimeString().slice(0, 5); // "HH:mm"
-
+    const todayStr = now.toISOString().split('T')[0];
+    
     const response = await databases.listDocuments(
       DATABASE_ID,
       COLLECTION_ID,
       [
         Query.greaterThanEqual('selectedDate', todayStr),
-        Query.orderAsc('selectedDate'),
         Query.orderAsc('selectedSlot'),
         Query.limit(100),
       ]
     );
-
-    const filtered = response.documents.filter(booking => {
-      const { selectedDate, selectedSlot } = booking;
-
-      if (selectedDate > todayStr) return true;
-
-      if (selectedDate === todayStr) {
-        const [startTime] = selectedSlot.split('-').map(s => s.trim()); // "09:00"
-        return startTime <= currentTimeStr;
-      }
-
-      return false; // Ignore past dates
-    });
-
-    setBooking(filtered);
+    setBooking(response.documents);
 
   } catch (error) {
     console.error("Error fetching bookings:", error);
@@ -54,36 +38,19 @@ useEffect(() => {
   const channel = `databases.${DATABASE_ID}.collections.${COLLECTION_ID}.documents`;
 
   if (user) {
-    getAllBookings(); // Initial fetch
+    getAllBookings();
 
     unsubscribe = client.subscribe(channel, (response) => {
       const { payload, events } = response;
 
-      const now = new Date();
-      const todayStr = now.toISOString().split('T')[0]; // "YYYY-MM-DD"
-      const currentTimeStr = now.toTimeString().slice(0, 5); // "HH:mm"
-
-      const bookingDate = payload.selectedDate;
-      const [startTime] = payload.selectedSlot.split('-').map((s) => s.trim());
-
-      const isBookingValid =
-        bookingDate > todayStr ||
-        (bookingDate === todayStr && startTime >= currentTimeStr);
-
-      if (!isBookingValid) {
-        return; // Ignore outdated bookings
-      }
-
       if (events[0].includes('create')) {
         setBooking((prevBooking) => [...prevBooking, payload]);
       }
-
       if (events[0].includes('delete')) {
         setBooking((prevBooking) =>
           prevBooking.filter((b) => b.$id !== payload.$id)
         );
       }
-
       if (events[0].includes('update')) {
         setBooking((prevBooking) =>
           prevBooking.map((b) => (b.$id === payload.$id ? payload : b))

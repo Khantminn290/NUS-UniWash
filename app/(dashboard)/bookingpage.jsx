@@ -28,10 +28,10 @@ const BookingPage = () => {
   const timeSlots = [
     '09:00 - 10:00', '10:00 - 11:00', '11:00 - 12:00', '12:00 - 13:00',
     '13:00 - 14:00', '14:00 - 15:00', '15:00 - 16:00', '16:00 - 17:00',
-    '17:00 - 18:00', '18:00 - 19:00', '19:00 - 20:00', '20:00 - 21:00', '01:00 - 02:00', '02:00 - 03:00'
+    '17:00 - 18:00', '18:00 - 19:00', '19:00 - 20:00', '20:00 - 21:00',
   ];
-  const daysOfWeek = Array.from({ length: 7 }, (_, i) => {
-    const date = dayjs().add(i, 'day');
+  const daysOfWeek = Array.from({ length: 8 }, (_, i) => {
+    const date = dayjs().add(i-1, 'day');
     return {
       label: date.format('ddd (MMM D)'),
       value: date.format('YYYY-MM-DD'),

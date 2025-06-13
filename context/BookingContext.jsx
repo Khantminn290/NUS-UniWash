@@ -12,24 +12,21 @@ export function BookingProvider({ children }) {
     const [booking, setBooking] = useState([])
     const { user } = useUser()
 
-    // this function only fetches the current logged in user's bookings
     async function fetchBooking() {
     try {
-        // Get today's date at midnight (start of day)
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        const todayISO = today.toISOString().slice(0, 10); // YYYY-MM-DD only, since selectedDate is probably date string
-
+        const now = new Date();
+        const todayStr = now.toISOString().split('T')[0];
+    
         const response = await databases.listDocuments(
             DATABASE_ID,
             COLLECTION_ID,
             [
-                Query.greaterThanEqual('selectedDate', todayISO),
+                Query.greaterThanEqual('selectedDate', todayStr),
                 Query.equal('userId', user.$id),
             ]
         );
         setBooking(response.documents);
-        console.log(response.documents);
+        
     } catch (error) {
         console.log(error);
     }
@@ -85,16 +82,8 @@ export function BookingProvider({ children }) {
             // Only process if the booking belongs to current user
             if (payload.userId !== user.$id) return;
 
-            // Get today's date at midnight to compare
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            const todayISO = today.toISOString().slice(0, 10);
-
-            // Only add if the booking is for today or later
             if (events[0].includes('create')) {
-                if (payload.selectedDate >= todayISO) {
-                    setBooking((prevBooking) => [...prevBooking, payload]);
-                }
+                setBooking((prevBooking) => [...prevBooking, payload]);
             }
 
             if (events[0].includes('delete')) {
