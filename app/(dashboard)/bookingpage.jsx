@@ -63,6 +63,8 @@ const BookingPage = () => {
   }, [machineNumber, selectedDate]);
 
   const handleBooking = async () => {
+    const today = dayjs().format("YYYY-MM-DD");
+    const weekAhead = dayjs().add(7, 'day').format("YYYY-MM-DD");
     if (!machineNumber || !selectedSlot || !selectedDate) {
       Alert.alert('Missing Info', 'Please select machine, date, and time slot.');
       return;
@@ -81,6 +83,20 @@ const BookingPage = () => {
 
       if (existing.documents.length > 0) {
         throw new Error("This time slot has already been booked.");
+      }
+
+      const existingFutureBookings = await databases.listDocuments(
+      DATABASE_ID,
+      COLLECTION_ID,
+      [
+        Query.equal('userName', user.name), // Make sure you're storing this correctly in the DB
+        Query.between('selectedDate', today, weekAhead),
+      ]
+      );
+
+      if (existingFutureBookings.documents.length > 0) {
+        throw new Error("You already have an active booking within the next 7 days. You can only make another booking after that one ends.");
+        return;
       }
 
       await createBooking(machineNumber, selectedDate, selectedSlot, user.name);
