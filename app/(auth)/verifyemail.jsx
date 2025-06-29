@@ -1,11 +1,22 @@
 import { useEffect } from 'react';
 import { View, Text, ActivityIndicator } from 'react-native';
-import { useRouter, useGlobalSearchParams } from 'expo-router';
+import { useRouter, useGlobalSearchParams, usestate } from 'expo-router';
 import { account } from '../../lib/appwrite';
 
 export default function VerifyEmailPage() {
   const router = useRouter();
   const { userId, secret } = useGlobalSearchParams();
+  const [verifyemail, setverifyemail] = usestate<boolean>(false);
+
+   const verifyemailhandle = async () =>{
+    try {
+      const promise = account.createVerification('https://example.com/verify')
+    } catch (error) {
+        console.log(error.message)
+    }
+  }
+
+  
 
   useEffect(() => {
     async function verifyEmail() {
