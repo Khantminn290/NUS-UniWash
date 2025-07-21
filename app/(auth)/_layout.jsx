@@ -8,7 +8,7 @@ export default function AuthLayout() {
   const { user, authChecked } = useUser();
   const router = useRouter();
 
-  // Redirect authenticated users to main dashboard
+// Redirect authenticated users to main dashboard
  useEffect(() => {
     if (authChecked && user !== null) {
       router.replace("/mainpage");
