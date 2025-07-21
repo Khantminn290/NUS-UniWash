@@ -72,7 +72,7 @@ export default function SignupPage() {
           style={styles.input}
         />
 
-        <Pressable style={styles.button} onPress={handleSubmit}>
+        <Pressable style={styles.button} onPress={handleSubmit} testID='signup-button'>
           <Text style={styles.buttonText}>Create Account</Text>
         </Pressable>
 
