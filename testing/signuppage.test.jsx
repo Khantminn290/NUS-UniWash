@@ -2,11 +2,9 @@ import React from 'react';
 import { render, fireEvent, waitFor } from '@testing-library/react-native';
 import SignupPage from '../app/(auth)/signuppage';
 
-// ✅ Declare mocks at top level
 const mockRegister = jest.fn();
 const mockPush = jest.fn();
 
-// ✅ Inject them into mocks
 jest.mock('expo-router', () => ({
   useRouter: () => ({ push: mockPush }),
 }));
