@@ -6,7 +6,7 @@ import { account } from '../../lib/appwrite';
 export default function VerifyEmailPage() {
   const router = useRouter();
   const { userId, secret } = useGlobalSearchParams();
-  const [verifyemail, setverifyemail] = usestate<boolean>(false);
+  const [verifyemail, setverifyemail] = usestate<Boolean>(false);
 
    const verifyemailhandle = async () =>{
     try {
