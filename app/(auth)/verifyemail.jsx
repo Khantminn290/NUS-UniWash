@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { View, Text, ActivityIndicator } from 'react-native';
-import { useRouter, useGlobalSearchParams, usestate } from 'expo-router';
+import { useRouter, useGlobalSearchParams, usestate} from 'expo-router';
 import { account } from '../../lib/appwrite';
 
 export default function VerifyEmailPage() {
