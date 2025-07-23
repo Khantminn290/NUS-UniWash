@@ -36,8 +36,6 @@ export function UserProvider({ children }) {
     try {
       await account.create(ID.unique(), email, password, name);
       await login(email, password);
-      await account.createVerification("exp://192.168.1.1:8081/--/auth/verifyemail"); // new line added for authentication
-      alert("Verification email sent! Please check your inbox."); // new line added for authentication 
     } catch (error) {
       if (error.code === 409) {  // 409 is usually "Conflict" for duplicate
       throw new Error("This email is already registered. Please log in or use another email.");
