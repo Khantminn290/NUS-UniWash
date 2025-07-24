@@ -16,6 +16,7 @@
     ]
   },
   "dependencies": {
+    "@react-native-community/datetimepicker": "^8.4.2",
     "date-fns": "^4.1.0",
     "dayjs": "^1.11.13",
     "expo": "^53.0.12",
