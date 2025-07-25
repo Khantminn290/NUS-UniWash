@@ -1,153 +1,104 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  FlatList,
-  Pressable,
-  Alert,
-  Modal,
-  TouchableOpacity,
-} from 'react-native';
-import React, { useState } from 'react';
+import { StyleSheet, Text, View, ScrollView, Pressable } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import { useAdminBooking } from '../../hooks/useAdminBooking';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
+import dayjs from 'dayjs';
 
-const getNext7Days = () => {
-  const days = [];
-  const today = new Date();
-  for (let i = 0; i < 7; i++) {
-    const d = new Date(today);
-    d.setDate(today.getDate() + i);
-    days.push(d.toISOString().split('T')[0]);
-  }
-  return days;
-};
+const timeSlots = [
+  '08:00 - 09:00', '09:00 - 10:00', '10:00 - 11:00', '11:00 - 12:00',
+  '12:00 - 13:00', '13:00 - 14:00', '14:00 - 15:00', '15:00 - 16:00',
+  '16:00 - 17:00', '17:00 - 18:00', '18:00 - 19:00', '19:00 - 20:00',
+  '20:00 - 21:00', '21:00 - 22:00', '22:00 - 23:00'
+];
 
-const machineOptions = ['M1', 'M2', 'M3'];
+const machineList = ['M1', 'M2', 'M3'];
 
-const bookingschedule = () => {
+const next7Days = Array.from({ length: 7 }, (_, i) =>
+  dayjs().add(i, 'day').format('YYYY-MM-DD')
+);
+
+const BookingSchedule = () => {
   const { booking } = useAdminBooking();
-  const [filterModalVisible, setFilterModalVisible] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [selectedMachine, setSelectedMachine] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(next7Days[0]);
 
-  const filterBookings = booking.filter((item) => {
-  const dateMatch = selectedDate ? item.selectedDate === selectedDate : true;
-  const machineMatch = selectedMachine ? item.machineNumber === selectedMachine : true;
-  return dateMatch && machineMatch;
-});
+  // Filter bookings for selected date
+  const bookingsForDate = booking.filter(b => b.selectedDate === selectedDate);
 
+  // Helper to get status
+  const getSlotStatus = (machine, slot) => {
+    const match = bookingsForDate.find(
+      b => b.machineNumber === machine && b.selectedSlot === slot
+    );
+    if (match) return `❌ ${match.userName}`;
+    return '✅ Available';
+  };
 
   return (
-    <SafeAreaView style={styles.safeArea}>
+    <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.title}>All Bookings</Text>
-        <TouchableOpacity onPress={() => setFilterModalVisible(true)} style={styles.filterButton}>
-          <Text style={styles.filterText}>Filter</Text>
-        </TouchableOpacity>
+        <Pressable
+          style={styles.bookButton}
+          onPress={() => router.push('./bookingpage')}
+        >
+          <Text style={styles.bookButtonText}>Create Booking</Text>
+        </Pressable>
       </View>
 
-      {/* Create Booking */}
-      <Pressable
-        style={styles.bookButton}
-        onPress={() => router.push('./bookingpage')}
-      >
-        <Text style={styles.bookButtonText}>Create New Booking</Text>
-      </Pressable>
+      {/* Date Selector */}
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.dateSelector}>
+        {next7Days.map(date => (
+          <Pressable
+            key={date}
+            style={[
+              styles.dateButton,
+              selectedDate === date && styles.selectedDateButton
+            ]}
+            onPress={() => setSelectedDate(date)}
+          >
+            <Text
+              style={[
+                styles.dateText,
+                selectedDate === date && styles.selectedDateText
+              ]}
+            >
+              {dayjs(date).format('ddd, MMM D')}
+            </Text>
+          </Pressable>
+        ))}
+      </ScrollView>
 
-      {/* List */}
-      <FlatList
-        data={filterBookings}
-        keyExtractor={(item) => item.$id}
-        contentContainerStyle={styles.list}
-        ListEmptyComponent={<Text style={styles.emptyText}>No bookings found.</Text>}
-        renderItem={({ item }) => (
-          <View style={styles.card}>
-            <Text style={styles.cardText}>Machine: {item.machineNumber}</Text>
-            <Text style={styles.cardText}>Date: {item.selectedDate}</Text>
-            <Text style={styles.cardText}>Time: {item.selectedSlot}</Text>
-            <Text style={styles.userText}>User: {item.userName}</Text>
+      {/* Table Header */}
+      <View style={styles.tableHeader}>
+        <Text style={styles.headerCell}>Time</Text>
+        {machineList.map(machine => (
+          <Text key={machine} style={styles.headerCell}>Machine {machine}</Text>
+        ))}
+      </View>
+
+      {/* Table Body */}
+      <ScrollView style={styles.scrollView}>
+        {timeSlots.map(slot => (
+          <View key={slot} style={styles.row}>
+            <Text style={styles.cell}>{slot}</Text>
+            {machineList.map(machine => (
+              <Text key={machine} style={styles.cell}>
+                {getSlotStatus(machine, slot)}
+              </Text>
+            ))}
           </View>
-        )}
-      />
-
-      {/* Filter Modal */}
-      <Modal
-        visible={filterModalVisible}
-        transparent={true}
-        animationType="slide"
-        onRequestClose={() => setFilterModalVisible(false)}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Filter Bookings</Text>
-
-            {/* Date options */}
-            <Text style={styles.sectionTitle}>Select Date</Text>
-            <View style={styles.optionsContainer}>
-              {getNext7Days().map((date) => (
-                <TouchableOpacity
-                  key={date}
-                  style={[
-                    styles.optionButton,
-                    selectedDate === date && styles.selectedOption,
-                  ]}
-                  onPress={() => setSelectedDate(date)}
-                >
-                  <Text style={styles.optionText}>{date}</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-
-            {/* Machine options */}
-            <Text style={styles.sectionTitle}>Select Machine</Text>
-            <View style={styles.optionsContainer}>
-              {machineOptions.map((machine) => (
-                <TouchableOpacity
-                  key={machine}
-                  style={[
-                    styles.optionButton,
-                    selectedMachine === machine && styles.selectedOption,
-                  ]}
-                  onPress={() => setSelectedMachine(machine)}
-                >
-                  <Text style={styles.optionText}>Machine {machine}</Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-
-            {/* Actions */}
-            <View style={styles.actionRow}>
-              <Pressable
-                style={[styles.modalButton, { backgroundColor: '#ccc' }]}
-                onPress={() => {
-                  setSelectedDate(null);
-                  setSelectedMachine(null);
-                }}
-              >
-                <Text style={styles.modalButtonText}>Clear</Text>
-              </Pressable>
-
-              <Pressable
-                style={styles.modalButton}
-                onPress={() => setFilterModalVisible(false)}
-              >
-                <Text style={styles.modalButtonText}>Apply</Text>
-              </Pressable>
-            </View>
-          </View>
-        </View>
-      </Modal>
+        ))}
+      </ScrollView>
     </SafeAreaView>
   );
 };
 
-export default bookingschedule;
+export default BookingSchedule;
 
 const styles = StyleSheet.create({
-  safeArea: {
+  container: {
     flex: 1,
     backgroundColor: '#FFF5E1',
   },
@@ -162,112 +113,63 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#FF6B35',
   },
-  filterButton: {
-    padding: 8,
-    backgroundColor: '#FF6B35',
-    borderRadius: 8,
-  },
-  filterText: {
-    color: '#fff',
-    fontWeight: '600',
-  },
   bookButton: {
     backgroundColor: '#FF6B35',
-    padding: 16,
-    marginHorizontal: 20,
+    paddingHorizontal: 16,
+    paddingVertical: 8,
     borderRadius: 12,
-    alignItems: 'center',
-    marginBottom: 16,
   },
   bookButtonText: {
     color: 'white',
-    fontSize: 16,
     fontWeight: '600',
   },
-  list: {
-    paddingHorizontal: 20,
-    paddingBottom: 40,
+  dateSelector: {
+    paddingHorizontal: 10,
+    marginBottom: 10,
   },
-  card: {
-    backgroundColor: '#FFE5B4',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
-  },
-  cardText: {
-    fontSize: 16,
-    color: '#333',
-    marginBottom: 4,
-  },
-  userText: {
-    fontSize: 14,
-    color: '#666',
-    fontStyle: 'italic',
-  },
-  emptyText: {
-    textAlign: 'center',
-    marginTop: 60,
-    fontSize: 16,
-    color: '#999',
-  },
-  modalContainer: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.4)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalContent: {
-    backgroundColor: 'white',
-    borderRadius: 16,
-    padding: 20,
-    width: '90%',
-    gap: 12,
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    marginBottom: 8,
-    textAlign: 'center',
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginTop: 8,
-  },
-  optionsContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-    marginTop: 8,
-  },
-  optionButton: {
-    backgroundColor: '#EEE',
-    paddingVertical: 6,
+  dateButton: {
     paddingHorizontal: 12,
+    paddingVertical: 8,
+    backgroundColor: '#FFE5B4',
+    marginRight: 10,
     borderRadius: 8,
   },
-  selectedOption: {
-    backgroundColor: '#FF9B55',
+  selectedDateButton: {
+    backgroundColor: '#FFD580',
   },
-  optionText: {
+  dateText: {
     color: '#333',
-    fontSize: 14,
+    fontWeight: '500',
   },
-  modalButton: {
-    backgroundColor: '#FF6B35',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    marginTop: 12,
+  selectedDateText: {
+    color: '#FF6B35',
+    fontWeight: '700',
   },
-  modalButtonText: {
-    color: 'white',
-    fontSize: 16,
-  },
-  actionRow: {
+  tableHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: 10,
-    marginTop: 12,
+    backgroundColor: '#FFE5B4',
+    padding: 10,
+  },
+  headerCell: {
+    flex: 1,
+    fontWeight: '700',
+    color: '#333',
+    textAlign: 'center',
+  },
+  row: {
+    flexDirection: 'row',
+    paddingVertical: 8,
+    paddingHorizontal: 5,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+    backgroundColor: '#FFF',
+  },
+  cell: {
+    flex: 1,
+    textAlign: 'center',
+    color: '#333',
+  },
+  scrollView: {
+    flex: 1,
   },
 });
