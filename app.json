@@ -1,6 +1,6 @@
 {
   "expo": {
-    "scheme": "NusUniWash", 
+    "scheme": "NusUniWash",
     "name": "NusUniWash",
     "slug": "NusUniWash",
     "version": "1.0.0",
@@ -13,10 +13,15 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "deepLinks": ["NusUniWash://*"],
+    "deepLinks": [
+      "NusUniWash://*"
+    ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.yourcompany.nusuniwash"
+      "bundleIdentifier": "com.yourcompany.nusuniwash",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
     },
     "android": {
       "package": "com.yourcompany.nusuniwash",
@@ -31,6 +36,12 @@
     },
     "plugins": [
       "expo-router"
-    ]
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "02d67ada-5d1e-42c2-9424-9732978fe9b2"
+      }
+    }
   }
 }
