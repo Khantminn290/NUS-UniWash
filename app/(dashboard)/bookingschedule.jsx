@@ -12,7 +12,7 @@ const timeSlots = [
   '20:00 - 21:00', '21:00 - 22:00'
 ];
 
-const machineList = ['M1', 'M2', 'M3'];
+const machineList = ['M1', 'M2', 'M3', 'M4', 'M5', 'M6', 'M7'];
 
 const next7Days = Array.from({ length: 7 }, (_, i) =>
   dayjs().add(i, 'day').format('YYYY-MM-DD')
@@ -63,32 +63,38 @@ const BookingSchedule = () => {
         </ScrollView>
       </View>
 
-      <View style={styles.tableHeader}>
-        <Text style={styles.headerCell}>Time</Text>
-        {machineList.map(machine => (
-          <Text key={machine} style={styles.headerCell}>Machine {machine}</Text>
-        ))}
-      </View>
-
-      <ScrollView style={styles.scrollView}>
-        {timeSlots.map(slot => (
-          <View key={slot} style={styles.row}>
-            <Text style={styles.cell}>{slot}</Text>
-            {machineList.map(machine => {
-              const info = getSlotInfo(machine, slot);
-              return (
-                <View
-                  key={machine}
-                  style={[styles.cell, info.booked ? styles.bookedCell : styles.availableCell]}
-                >
-                  <Text style={styles.cellText}>
-                    {info.booked ? info.userName : 'Available'}
-                  </Text>
-                </View>
-              );
-            })}
+      <ScrollView horizontal>
+        <View>
+          {/* Table Header */}
+          <View style={styles.tableHeader}>
+            <Text style={[styles.headerCell, styles.timeColumn]}>Time</Text>
+            {machineList.map(machine => (
+              <Text key={machine} style={styles.headerCell}>Machine {machine}</Text>
+            ))}
           </View>
-        ))}
+
+          {/* Table Rows */}
+          <ScrollView style={styles.scrollView}>
+            {timeSlots.map(slot => (
+              <View key={slot} style={styles.row}>
+                <Text style={[styles.cell, styles.timeColumn]}>{slot}</Text>
+                {machineList.map(machine => {
+                  const info = getSlotInfo(machine, slot);
+                  return (
+                    <View
+                      key={machine}
+                      style={[styles.cell, info.booked ? styles.bookedCell : styles.availableCell]}
+                    >
+                      <Text style={styles.cellText}>
+                        {info.booked ? info.userName : 'Available'}
+                      </Text>
+                    </View>
+                  );
+                })}
+              </View>
+            ))}
+          </ScrollView>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -123,16 +129,16 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   dateSelectorContainer: {
-    height: 50,           // fix height to avoid collapse & clipping
+    height: 50,
     marginBottom: 15,
   },
   dateSelectorContent: {
     paddingHorizontal: 10,
-    alignItems: 'center', // vertically center the buttons inside ScrollView
+    alignItems: 'center',
   },
   dateButton: {
     paddingHorizontal: 16,
-    paddingVertical: 10,   // increased vertical padding for better touch area
+    paddingVertical: 10,
     backgroundColor: '#FFE5B4',
     marginRight: 12,
     borderRadius: 8,
@@ -151,15 +157,18 @@ const styles = StyleSheet.create({
   tableHeader: {
     flexDirection: 'row',
     backgroundColor: '#FCD5B4',
-    padding: 10,
+    paddingVertical: 10,
   },
   headerCell: {
-    flex: 1,
+    minWidth: 100,
     fontWeight: '700',
     textAlign: 'center',
   },
+  timeColumn: {
+    minWidth: 120,
+  },
   scrollView: {
-    paddingHorizontal: 10,
+    maxHeight: '75%', // limits scroll area so header stays visible
   },
   row: {
     flexDirection: 'row',
@@ -167,7 +176,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
   },
   cell: {
-    flex: 1,
+    minWidth: 100,
     padding: 8,
     margin: 2,
     alignItems: 'center',
@@ -175,11 +184,12 @@ const styles = StyleSheet.create({
   },
   cellText: {
     fontWeight: '500',
+    textAlign: 'center',
   },
   availableCell: {
-    backgroundColor: '#C9F7C9', // green
+    backgroundColor: '#C9F7C9',
   },
   bookedCell: {
-    backgroundColor: '#F8D7DA', // red
+    backgroundColor: '#F8D7DA',
   },
 });

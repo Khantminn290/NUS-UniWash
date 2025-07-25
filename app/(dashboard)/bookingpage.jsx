@@ -24,14 +24,14 @@ const BookingPage = () => {
 
   const { createBooking } = useBooking();
 
-  const machines = ["M1", "M2", "M3"];
+  const machines = ["M1", "M2", "M3", "M4", "M5", "M6", "M7"];
   const timeSlots = [
     '09:00 - 10:00', '10:00 - 11:00', '11:00 - 12:00', '12:00 - 13:00',
     '13:00 - 14:00', '14:00 - 15:00', '15:00 - 16:00', '16:00 - 17:00',
     '17:00 - 18:00', '18:00 - 19:00', '19:00 - 20:00', '20:00 - 21:00',
   ];
   const daysOfWeek = Array.from({ length: 8 }, (_, i) => {
-    const date = dayjs().add(i -1, 'day');
+    const date = dayjs().add(i - 1, 'day');
     return {
       label: date.format('ddd (MMM D)'),
       value: date.format('YYYY-MM-DD'),
@@ -86,17 +86,16 @@ const BookingPage = () => {
       }
 
       const existingFutureBookings = await databases.listDocuments(
-      DATABASE_ID,
-      COLLECTION_ID,
-      [
-        Query.equal('userName', user.name), // Make sure you're storing this correctly in the DB
-        Query.between('selectedDate', today, weekAhead),
-      ]
+        DATABASE_ID,
+        COLLECTION_ID,
+        [
+          Query.equal('userName', user.name),
+          Query.between('selectedDate', today, weekAhead),
+        ]
       );
 
       if (existingFutureBookings.documents.length > 0) {
         throw new Error("You already have an active booking within the next 7 days. You can only make another booking after that one ends.");
-        return;
       }
 
       await createBooking(machineNumber, selectedDate, selectedSlot, user.name);
@@ -139,14 +138,14 @@ const BookingPage = () => {
           />
 
           <Text style={styles.label}>Select Machine</Text>
-          <View style={styles.buttonRow}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.horizontalScroll}>
             {machines.map((machine) => (
               <Pressable
                 key={machine}
                 onPress={() => setMachineNumber(machine)}
                 style={[
-                  styles.machineButton,
-                  machineNumber === machine && styles.selectedButton,
+                  styles.slotButton,
+                  machineNumber === machine && styles.selectedSlot,
                 ]}
               >
                 <Text
@@ -159,7 +158,7 @@ const BookingPage = () => {
                 </Text>
               </Pressable>
             ))}
-          </View>
+          </ScrollView>
 
           <Text style={styles.label}>Select Day</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.horizontalScroll}>
@@ -198,7 +197,7 @@ const BookingPage = () => {
                     isBooked
                       ? { backgroundColor: '#E74C3C' }
                       : isSelected
-                        ? styles.selectedSlot 
+                        ? styles.selectedSlot
                         : { backgroundColor: '#2ECC71' }
                   ]}
                 >
@@ -268,23 +267,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     fontSize: 16,
     marginBottom: 10,
-  },
-  buttonRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 16,
-  },
-  machineButton: {
-    backgroundColor: '#ccc',
-    paddingVertical: 12,
-    paddingHorizontal: 18,
-    borderRadius: 10,
-    flex: 1,
-    marginHorizontal: 4,
-    alignItems: 'center',
-  },
-  selectedButton: {
-    backgroundColor: '#FF8C42',
   },
   horizontalScroll: {
     marginBottom: 16,

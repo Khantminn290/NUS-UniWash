@@ -7,7 +7,7 @@ const MainPage = () => {
   const { booking } = useContext(WashingMachineContext);
 
   // List of all machines
-  const allMachines = ['M1', 'M2', 'M3'];
+  const allMachines = ['M1', 'M2', 'M3','M4','M5','M6','M7'];
 
   return (
     <SafeAreaView style={styles.safeArea}>
