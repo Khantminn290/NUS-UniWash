@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View, ScrollView, Pressable } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useAdminBooking } from '../../hooks/useAdminBooking';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
@@ -9,7 +9,7 @@ const timeSlots = [
   '08:00 - 09:00', '09:00 - 10:00', '10:00 - 11:00', '11:00 - 12:00',
   '12:00 - 13:00', '13:00 - 14:00', '14:00 - 15:00', '15:00 - 16:00',
   '16:00 - 17:00', '17:00 - 18:00', '18:00 - 19:00', '19:00 - 20:00',
-  '20:00 - 21:00', '21:00 - 22:00', '22:00 - 23:00'
+  '20:00 - 21:00', '21:00 - 22:00'
 ];
 
 const machineList = ['M1', 'M2', 'M3'];
@@ -22,21 +22,17 @@ const BookingSchedule = () => {
   const { booking } = useAdminBooking();
   const [selectedDate, setSelectedDate] = useState(next7Days[0]);
 
-  // Filter bookings for selected date
   const bookingsForDate = booking.filter(b => b.selectedDate === selectedDate);
 
-  // Helper to get status
-  const getSlotStatus = (machine, slot) => {
+  const getSlotInfo = (machine, slot) => {
     const match = bookingsForDate.find(
       b => b.machineNumber === machine && b.selectedSlot === slot
     );
-    if (match) return `❌ ${match.userName}`;
-    return '✅ Available';
+    return match ? { booked: true, userName: match.userName } : { booked: false };
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
       <View style={styles.header}>
         <Text style={styles.title}>All Bookings</Text>
         <Pressable
@@ -47,30 +43,26 @@ const BookingSchedule = () => {
         </Pressable>
       </View>
 
-      {/* Date Selector */}
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.dateSelector}>
-        {next7Days.map(date => (
-          <Pressable
-            key={date}
-            style={[
-              styles.dateButton,
-              selectedDate === date && styles.selectedDateButton
-            ]}
-            onPress={() => setSelectedDate(date)}
-          >
-            <Text
-              style={[
-                styles.dateText,
-                selectedDate === date && styles.selectedDateText
-              ]}
+      <View style={styles.dateSelectorContainer}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.dateSelectorContent}
+        >
+          {next7Days.map(date => (
+            <Pressable
+              key={date}
+              style={[styles.dateButton, selectedDate === date && styles.selectedDateButton]}
+              onPress={() => setSelectedDate(date)}
             >
-              {dayjs(date).format('ddd, MMM D')}
-            </Text>
-          </Pressable>
-        ))}
-      </ScrollView>
+              <Text style={[styles.dateText, selectedDate === date && styles.selectedDateText]}>
+                {dayjs(date).format('ddd, MMM D')}
+              </Text>
+            </Pressable>
+          ))}
+        </ScrollView>
+      </View>
 
-      {/* Table Header */}
       <View style={styles.tableHeader}>
         <Text style={styles.headerCell}>Time</Text>
         {machineList.map(machine => (
@@ -78,16 +70,23 @@ const BookingSchedule = () => {
         ))}
       </View>
 
-      {/* Table Body */}
       <ScrollView style={styles.scrollView}>
         {timeSlots.map(slot => (
           <View key={slot} style={styles.row}>
             <Text style={styles.cell}>{slot}</Text>
-            {machineList.map(machine => (
-              <Text key={machine} style={styles.cell}>
-                {getSlotStatus(machine, slot)}
-              </Text>
-            ))}
+            {machineList.map(machine => {
+              const info = getSlotInfo(machine, slot);
+              return (
+                <View
+                  key={machine}
+                  style={[styles.cell, info.booked ? styles.bookedCell : styles.availableCell]}
+                >
+                  <Text style={styles.cellText}>
+                    {info.booked ? info.userName : 'Available'}
+                  </Text>
+                </View>
+              );
+            })}
           </View>
         ))}
       </ScrollView>
@@ -123,53 +122,64 @@ const styles = StyleSheet.create({
     color: 'white',
     fontWeight: '600',
   },
-  dateSelector: {
+  dateSelectorContainer: {
+    height: 50,           // fix height to avoid collapse & clipping
+    marginBottom: 15,
+  },
+  dateSelectorContent: {
     paddingHorizontal: 10,
-    marginBottom: 10,
+    alignItems: 'center', // vertically center the buttons inside ScrollView
   },
   dateButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 10,   // increased vertical padding for better touch area
     backgroundColor: '#FFE5B4',
-    marginRight: 10,
+    marginRight: 12,
     borderRadius: 8,
   },
   selectedDateButton: {
-    backgroundColor: '#FFD580',
+    backgroundColor: '#FFB347',
   },
   dateText: {
+    fontSize: 14,
     color: '#333',
-    fontWeight: '500',
   },
   selectedDateText: {
-    color: '#FF6B35',
     fontWeight: '700',
+    color: '#FFF',
   },
   tableHeader: {
     flexDirection: 'row',
-    backgroundColor: '#FFE5B4',
+    backgroundColor: '#FCD5B4',
     padding: 10,
   },
   headerCell: {
     flex: 1,
     fontWeight: '700',
-    color: '#333',
     textAlign: 'center',
+  },
+  scrollView: {
+    paddingHorizontal: 10,
   },
   row: {
     flexDirection: 'row',
+    alignItems: 'center',
     paddingVertical: 8,
-    paddingHorizontal: 5,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-    backgroundColor: '#FFF',
   },
   cell: {
     flex: 1,
-    textAlign: 'center',
-    color: '#333',
+    padding: 8,
+    margin: 2,
+    alignItems: 'center',
+    borderRadius: 6,
   },
-  scrollView: {
-    flex: 1,
+  cellText: {
+    fontWeight: '500',
+  },
+  availableCell: {
+    backgroundColor: '#C9F7C9', // green
+  },
+  bookedCell: {
+    backgroundColor: '#F8D7DA', // red
   },
 });
