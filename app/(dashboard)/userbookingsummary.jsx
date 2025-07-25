@@ -45,7 +45,7 @@ const UserBookingSummary = () => {
               <Text style={styles.cardText}>Date: {item.selectedDate}</Text>
               <Text style={styles.cardText}>Time Slot: {item.selectedSlot}</Text>
             </View>
-            <Pressable onPress={() => handleDelete(item.$id)}>
+            <Pressable testID={`delete-button-${item.$id}`} onPress={() => handleDelete(item.$id)}>
               <Ionicons name="trash" size={24} color="#FF6B35" />
             </Pressable>
           </View>

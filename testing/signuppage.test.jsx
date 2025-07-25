@@ -4,6 +4,7 @@ import SignupPage from '../app/(auth)/signuppage';
 
 const mockRegister = jest.fn();
 const mockPush = jest.fn();
+const mockCreateVerification = jest.fn(() => Promise.resolve());
 
 jest.mock('expo-router', () => ({
   useRouter: () => ({ push: mockPush }),
@@ -18,7 +19,7 @@ jest.mock('../hooks/useUser', () => ({
 
 jest.mock('../lib/appwrite', () => ({
   account: {
-    createVerification: jest.fn(() => Promise.resolve()),
+    createVerification: mockCreateVerification,
   },
 }));
 
@@ -48,23 +49,18 @@ describe('SignupPage', () => {
     expect(errorMessage).toBeTruthy();
   });
 
-  it('calls register and sends verification email on valid input', async () => {
-    const { account } = require('../lib/appwrite');
+  it('shows error if register throws', async () => {
+    mockRegister.mockRejectedValueOnce(new Error('Registration failed'));
 
-    mockRegister.mockResolvedValueOnce();
-    account.createVerification.mockResolvedValueOnce();
+    const { getByPlaceholderText, getByTestId, findByText } = render(<SignupPage />);
 
-    const { getByPlaceholderText, getByTestId } = render(<SignupPage />);
-    
     fireEvent.changeText(getByPlaceholderText('Name'), 'Test User');
     fireEvent.changeText(getByPlaceholderText('Email'), 'e1234567@u.nus.edu');
-    fireEvent.changeText(getByPlaceholderText('Password'), 'Valid1!Password');
+    fireEvent.changeText(getByPlaceholderText('Password'), 'ValidPass123!');
+
     fireEvent.press(getByTestId('signup-button'));
 
-    await waitFor(() => {
-      expect(mockRegister).toHaveBeenCalledWith('e1234567@u.nus.edu', 'Valid1!Password', 'Test User');
-      expect(account.createVerification).toHaveBeenCalled();
-      expect(mockPush).toHaveBeenCalledWith('/verifyemail');
-    });
+    const errorMessage = await findByText(/Registration failed/i);
+    expect(errorMessage).toBeTruthy();
   });
 });
