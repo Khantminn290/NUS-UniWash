@@ -3,64 +3,62 @@ import React, { useEffect, useState } from 'react';
 import { useUser } from '../../hooks/useUser';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { databases } from '../../lib/appwrite'; // Update this to match your setup
+import { databases } from '../../lib/appwrite';
 import { Query } from 'react-native-appwrite';
 import dayjs from 'dayjs';
 
 const ProfilePage = () => {
   const { logout, user } = useUser();
-  const [timeLeft, setTimeLeft] = useState(null);
   const [activeBooking, setActiveBooking] = useState(null);
-
-  const timeSlots = [
-    '09:00 - 10:00', '10:00 - 11:00', '11:00 - 12:00', '12:00 - 13:00',
-    '13:00 - 14:00', '14:00 - 15:00', '15:00 - 16:00', '16:00 - 17:00',
-    '17:00 - 18:00', '18:00 - 19:00', '19:00 - 20:00', '20:00 - 21:00',
-  ];
+  const [timeLeft, setTimeLeft] = useState(null);
 
   useEffect(() => {
-    const fetchBookings = async () => {
+    const interval = setInterval(async () => {
       try {
         const today = dayjs().format('YYYY-MM-DD');
         const now = dayjs();
-        
-        const response = await databases.listDocuments("6843fa14001fa0d2b7e6","6843fa25003cb5d52a58" , [
-          Query.equal('userId', user.$id),
-          Query.equal('selectedDate', today)
-        ]);
+
+        const response = await databases.listDocuments(
+          "6843fa14001fa0d2b7e6",
+          "6843fa25003cb5d52a58",
+          [
+            Query.equal('userId', user.$id),
+            Query.equal('selectedDate', today)
+          ]
+        );
 
         const bookingsToday = response.documents;
 
+        let foundBooking = null;
+
         for (let booking of bookingsToday) {
+          if (!booking.selectedSlot) continue;
+
           const [start, end] = booking.selectedSlot.split(' - ');
           const startTime = dayjs(`${today}T${start}:00`);
           const endTime = dayjs(`${today}T${end}:00`);
 
           if (now.isAfter(startTime) && now.isBefore(endTime)) {
-            setActiveBooking(booking);
-            setTimeLeft(endTime.diff(now));
+            foundBooking = booking;
+            const diff = endTime.diff(now, 'second');
+            setTimeLeft(diff);
             break;
           }
         }
+
+        setActiveBooking(foundBooking);
+        if (!foundBooking) setTimeLeft(null);
       } catch (error) {
         console.error('Error fetching bookings:', error);
-      }
-    };
-
-    fetchBookings();
-
-    const interval = setInterval(() => {
-      if (timeLeft !== null) {
-        setTimeLeft((prev) => (prev > 1000 ? prev - 1000 : 0));
       }
     }, 1000);
 
     return () => clearInterval(interval);
   }, [user]);
 
-  const formatTimeLeft = (milliseconds) => {
-    const mins = Math.floor(milliseconds / 60000);
-    const secs = Math.floor((milliseconds % 60000) / 1000);
+  const formatTimeLeft = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
