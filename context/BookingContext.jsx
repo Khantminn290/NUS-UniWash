@@ -30,7 +30,7 @@ export function BookingProvider({ children }) {
     } catch (error) {
         console.log(error);
     }
-}
+    }
 
     async function createBooking(machineNumber, selectedDate, selectedSlot, userName) {
         try {

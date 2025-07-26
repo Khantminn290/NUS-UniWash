@@ -23,7 +23,7 @@ async function getAllBookings() {
       [
         Query.greaterThanEqual('selectedDate', todayStr),
         Query.orderAsc('selectedSlot'),
-        Query.limit(100),
+        Query.limit(1000),
       ]
     );
     setBooking(response.documents);
