@@ -6,11 +6,13 @@ import { Ionicons } from '@expo/vector-icons';
 import { databases } from '../../lib/appwrite';
 import { Query } from 'react-native-appwrite';
 import dayjs from 'dayjs';
+import { AnimatedCircularProgress } from 'react-native-circular-progress';
 
 const ProfilePage = () => {
   const { logout, user } = useUser();
   const [activeBooking, setActiveBooking] = useState(null);
   const [timeLeft, setTimeLeft] = useState(null);
+  const [bookingDuration, setBookingDuration] = useState(3600); // default to 1 hour
 
   useEffect(() => {
     const interval = setInterval(async () => {
@@ -28,7 +30,6 @@ const ProfilePage = () => {
         );
 
         const bookingsToday = response.documents;
-
         let foundBooking = null;
 
         for (let booking of bookingsToday) {
@@ -40,8 +41,10 @@ const ProfilePage = () => {
 
           if (now.isAfter(startTime) && now.isBefore(endTime)) {
             foundBooking = booking;
+            const duration = endTime.diff(startTime, 'second');
             const diff = endTime.diff(now, 'second');
             setTimeLeft(diff);
+            setBookingDuration(duration);
             break;
           }
         }
@@ -81,9 +84,26 @@ const ProfilePage = () => {
 
       {/* Countdown Timer */}
       {activeBooking && timeLeft > 0 && (
-        <View style={styles.timerBox}>
-          <Text style={styles.timerText}>
-            ⏳ Booking on {activeBooking.machineNumber} ends in {formatTimeLeft(timeLeft)}
+        <View style={styles.circularWrapper}>
+          <AnimatedCircularProgress
+            size={160}
+            width={12}
+            fill={(timeLeft / bookingDuration) * 100}
+            tintColor="#FF6B35"
+            backgroundColor="#FFE4C9"
+            rotation={0}
+            lineCap="round"
+          >
+            {
+              () => (
+                <Text style={styles.circularText}>
+                  ⏳ {formatTimeLeft(timeLeft)}
+                </Text>
+              )
+            }
+          </AnimatedCircularProgress>
+          <Text style={styles.machineText}>
+            Booking on {activeBooking.machineNumber}
           </Text>
         </View>
       )}
@@ -149,15 +169,17 @@ const styles = StyleSheet.create({
     color: '#555',
     marginTop: 4,
   },
-  timerBox: {
-    backgroundColor: '#FFF3C4',
-    marginHorizontal: 20,
-    padding: 14,
-    borderRadius: 12,
+  circularWrapper: {
     alignItems: 'center',
-    marginBottom: 10,
+    marginVertical: 20,
   },
-  timerText: {
+  circularText: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#FF6B35',
+  },
+  machineText: {
+    marginTop: 8,
     fontSize: 16,
     color: '#444',
     fontWeight: '600',
