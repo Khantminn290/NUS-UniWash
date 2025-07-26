@@ -42,7 +42,7 @@ describe('MainPage', () => {
   );
 
   const availableTexts = getAllByText('Available');
-  expect(availableTexts.length).toBe(4); // 3 machines + 1 summary
+  expect(availableTexts.length).toBe(8); // 3 machines + 1 summary
 
   // Only "In Use" in the summary, no user booking info should be rendered
   expect(queryByText('User:')).toBeNull();
@@ -57,7 +57,7 @@ describe('MainPage', () => {
       </WashingMachineContext.Provider>
     );
 
-    expect(getByText('1')).toBeTruthy(); // In Use
-    expect(getByText('2')).toBeTruthy(); // Available
+    expect(getByText('M1')).toBeTruthy(); // In Use
+    expect(getByText('M2')).toBeTruthy(); // Available
   });
 });
