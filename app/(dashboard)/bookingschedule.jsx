@@ -21,6 +21,7 @@ const next7Days = Array.from({ length: 7 }, (_, i) =>
 const BookingSchedule = () => {
   const { booking } = useAdminBooking();
   const [selectedDate, setSelectedDate] = useState(next7Days[0]);
+  const [selectedMachine, setSelectedMachine] = useState(null);
 
   const bookingsForDate = booking.filter(b => b.selectedDate === selectedDate);
 
@@ -30,6 +31,8 @@ const BookingSchedule = () => {
     );
     return match ? { booked: true, userName: match.userName } : { booked: false };
   };
+
+  const visibleMachines = selectedMachine ? [selectedMachine] : machineList;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -43,6 +46,7 @@ const BookingSchedule = () => {
         </Pressable>
       </View>
 
+      {/* Date Selector */}
       <View style={styles.dateSelectorContainer}>
         <ScrollView
           horizontal
@@ -63,29 +67,59 @@ const BookingSchedule = () => {
         </ScrollView>
       </View>
 
-      <ScrollView horizontal>
+      {/* Machine Filter */}
+      <View style={styles.machineSelectorContainer}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {/* All Machines Button */}
+          <Pressable
+            onPress={() => setSelectedMachine(null)}
+            style={[styles.machineButton, selectedMachine === null && styles.selectedMachineButton]}
+          >
+            <Text style={styles.machineText}>All Machines</Text>
+          </Pressable>
+
+          {machineList.map(machine => (
+            <Pressable
+              key={machine}
+              onPress={() => setSelectedMachine(machine === selectedMachine ? null : machine)}
+              style={[styles.machineButton, selectedMachine === machine && styles.selectedMachineButton]}
+            >
+              <Text style={styles.machineText}>{machine}</Text>
+            </Pressable>
+          ))}
+        </ScrollView>
+      </View>
+
+      {/* Booking Table */}
+      <ScrollView horizontal style={styles.tableWrapper}>
         <View>
           {/* Table Header */}
           <View style={styles.tableHeader}>
-            <Text style={[styles.headerCell, styles.timeColumn]}>Time</Text>
-            {machineList.map(machine => (
-              <Text key={machine} style={styles.headerCell}>Machine {machine}</Text>
+            <View style={[styles.headerCell, styles.timeColumn]}>
+              <Text style={styles.headerText}>Time</Text>
+            </View>
+            {visibleMachines.map(machine => (
+              <View key={machine} style={styles.headerCell}>
+                <Text style={styles.headerText}>{machine}</Text>
+              </View>
             ))}
           </View>
 
           {/* Table Rows */}
-          <ScrollView style={styles.scrollView}>
+          <ScrollView style={{ maxHeight: '75%' }}>
             {timeSlots.map(slot => (
               <View key={slot} style={styles.row}>
-                <Text style={[styles.cell, styles.timeColumn]}>{slot}</Text>
-                {machineList.map(machine => {
+                <View style={[styles.cell, styles.timeColumn]}>
+                  <Text numberOfLines={1} style={styles.cellText}>{slot}</Text>
+                </View>
+                {visibleMachines.map(machine => {
                   const info = getSlotInfo(machine, slot);
                   return (
                     <View
                       key={machine}
                       style={[styles.cell, info.booked ? styles.bookedCell : styles.availableCell]}
                     >
-                      <Text style={styles.cellText}>
+                      <Text numberOfLines={1} ellipsizeMode="tail" style={styles.cellText}>
                         {info.booked ? info.userName : 'Available'}
                       </Text>
                     </View>
@@ -101,6 +135,7 @@ const BookingSchedule = () => {
 };
 
 export default BookingSchedule;
+
 
 const styles = StyleSheet.create({
   container: {
@@ -130,7 +165,7 @@ const styles = StyleSheet.create({
   },
   dateSelectorContainer: {
     height: 50,
-    marginBottom: 15,
+    marginBottom: 8,
   },
   dateSelectorContent: {
     paddingHorizontal: 10,
@@ -154,32 +189,56 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#FFF',
   },
+  machineSelectorContainer: {
+    height: 50,
+    marginBottom: 10,
+    paddingHorizontal: 10,
+  },
+  machineButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    backgroundColor: '#FFE5B4',
+    marginRight: 10,
+    borderRadius: 8,
+  },
+  selectedMachineButton: {
+    backgroundColor: '#FFB347',
+  },
+  machineText: {
+    fontSize: 14,
+    color: '#333',
+  },
+  tableWrapper: {
+    flex: 1,
+  },
   tableHeader: {
     flexDirection: 'row',
     backgroundColor: '#FCD5B4',
     paddingVertical: 10,
   },
   headerCell: {
-    minWidth: 100,
+    width: 100,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  headerText: {
     fontWeight: '700',
     textAlign: 'center',
   },
   timeColumn: {
-    minWidth: 120,
-  },
-  scrollView: {
-    maxHeight: '90%', // limits scroll area so header stays visible
+    width: 120,
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 8,
+    paddingVertical: 6,
   },
   cell: {
-    minWidth: 100,
+    width: 100,
     padding: 8,
     margin: 2,
     alignItems: 'center',
+    justifyContent: 'center',
     borderRadius: 6,
   },
   cellText: {
