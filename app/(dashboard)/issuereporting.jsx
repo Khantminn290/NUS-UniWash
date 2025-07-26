@@ -34,7 +34,7 @@ const IssueReporting = () => {
       await fetchIssues();
     } catch (error) {
       console.error("Error submitting issue:", error);
-      Alert.alert("Submission Fail", "Could not submit the issue.");
+      Alert.alert("Submission Failed", "Could not submit the issue.");
     }
   };
 
