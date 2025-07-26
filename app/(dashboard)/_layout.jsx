@@ -33,7 +33,7 @@ export default function DashboardLayout() {
         <Tabs.Screen
           name="issuereporting" 
           options={{
-            title: "report", // Custom title
+            title: "Report", // Custom title
             tabBarIcon: ({ color, size }) => (
               <MaterialIcons name="report" size={size} color={color} />
             ),
