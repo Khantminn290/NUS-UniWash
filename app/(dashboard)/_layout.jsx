@@ -10,9 +10,10 @@ export default function DashboardLayout() {
         tabBarStyle: {
           paddingBottom: 20,
           height: 65,
+          marginBottom: 20,
         } }}>
         <Tabs.Screen
-          name="mainpage" // matche the file name 
+          name="mainpage"  
           options={{
             title: "Home", // Custom title
             tabBarIcon: ({ color, size }) => (

@@ -1,13 +1,36 @@
 import { StyleSheet, Text, View, FlatList, Image } from 'react-native';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { WashingMachineContext } from '../../context/WashingMachineContext';
+import dayjs from 'dayjs';
 
 const MainPage = () => {
   const { booking } = useContext(WashingMachineContext);
+  const [currentTime, setCurrentTime] = useState(dayjs());
 
-  // List of all machines
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(dayjs());
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
   const allMachines = ['M1', 'M2', 'M3','M4','M5','M6','M7'];
+
+  const formatTime = (seconds) => {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  };
+
+  const getTimeLeft = (selectedDate, selectedSlot) => {
+    const [start] = selectedSlot.split(' - ');
+    const startTime = dayjs(`${selectedDate}T${start}:00`);
+    const endTime = startTime.add(1, 'hour');
+    const secondsLeft = endTime.diff(currentTime, 'second');
+    const isActive = currentTime.isAfter(startTime) && currentTime.isBefore(endTime);
+    return isActive && secondsLeft > 0 ? formatTime(secondsLeft) : null;
+  };
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -16,7 +39,6 @@ const MainPage = () => {
         <Text style={styles.subtitle}>Current Machine Status</Text>
       </View>
 
-      {/* Status Summary */}
       <View style={styles.summaryContainer}>
         <View style={styles.summaryItem}>
           <Text style={styles.summaryNumber}>{booking.length}</Text>
@@ -28,7 +50,6 @@ const MainPage = () => {
         </View>
       </View>
 
-      {/* Machines List */}
       <FlatList
         data={allMachines}
         keyExtractor={(item) => item}
@@ -36,6 +57,11 @@ const MainPage = () => {
         renderItem={({ item }) => {
           const machineBooking = booking.find(b => b.machineNumber === item);
           const isAvailable = !machineBooking;
+
+          let timeLeft = null;
+          if (machineBooking) {
+            timeLeft = getTimeLeft(machineBooking.selectedDate, machineBooking.selectedSlot);
+          }
 
           return (
             <View style={[styles.card, isAvailable ? styles.available : styles.inUse]}>
@@ -64,7 +90,10 @@ const MainPage = () => {
                   </View>
                   <View style={styles.infoRow}>
                     <Text style={styles.infoLabel}>Time Slot:</Text>
-                    <Text style={styles.infoValue}>{machineBooking.selectedSlot}</Text>
+                    <Text style={styles.infoValue}>
+                      {machineBooking.selectedSlot}
+                      {timeLeft && ` | ${timeLeft} left`}
+                    </Text>
                   </View>
                 </View>
               )}

@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
     minWidth: 120,
   },
   scrollView: {
-    maxHeight: '75%', // limits scroll area so header stays visible
+    maxHeight: '90%', // limits scroll area so header stays visible
   },
   row: {
     flexDirection: 'row',
