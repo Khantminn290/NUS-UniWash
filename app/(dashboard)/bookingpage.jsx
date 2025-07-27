@@ -11,19 +11,20 @@ import { router } from 'expo-router';
 import { useBooking } from '../../hooks/useBooking';
 import { Query } from "react-native-appwrite";
 
-
+// Appwrite Database and Collection IDs
 const DATABASE_ID = "6843fa14001fa0d2b7e6";
 const COLLECTION_ID = "6843fa25003cb5d52a58";
 
 const BookingPage = () => {
-  const { user } = useUser();
-  const [machineNumber, setMachineNumber] = useState("");
-  const [selectedSlot, setSelectedSlot] = useState("");
-  const [selectedDate, setSelectedDate] = useState("");
-  const [bookedSlots, setBookedSlots] = useState([]);
+  const { user } = useUser(); // Get the current logged-in user
+  const [machineNumber, setMachineNumber] = useState(""); // Selected washing machine
+  const [selectedSlot, setSelectedSlot] = useState(""); // Selected time slot
+  const [selectedDate, setSelectedDate] = useState(""); // Selected date
+  const [bookedSlots, setBookedSlots] = useState([]); // Already booked slots for selected machine + date
 
-  const { createBooking } = useBooking();
+  const { createBooking } = useBooking(); // Custom hook to handle creating bookings
 
+  // List of available machines and time slots
   const machines = ["M1", "M2", "M3", "M4", "M5", "M6", "M7"];
   const timeSlots = [
     '09:00 - 10:00', '10:00 - 11:00', '11:00 - 12:00', '12:00 - 13:00',
@@ -31,6 +32,8 @@ const BookingPage = () => {
     '17:00 - 18:00', '18:00 - 19:00', '19:00 - 20:00', '20:00 - 21:00', 
     '21:00 - 22:00', '22:00 - 23:00', '23:00 - 24:00'
   ];
+
+  // Generate list of the next 8 days with labels and values
   const daysOfWeek = Array.from({ length: 8 }, (_, i) => {
     const date = dayjs().add(i, 'day');
     return {
@@ -39,6 +42,7 @@ const BookingPage = () => {
     };
   });
 
+  // Fetch all booked slots for the selected machine and date
   useEffect(() => {
     const fetchBookedSlots = async () => {
       if (!machineNumber || !selectedDate) {
@@ -63,15 +67,19 @@ const BookingPage = () => {
     fetchBookedSlots();
   }, [machineNumber, selectedDate]);
 
+  // Handle the booking when user clicks "Book Now"
   const handleBooking = async () => {
     const today = dayjs().format("YYYY-MM-DD");
     const weekAhead = dayjs().add(7, 'day').format("YYYY-MM-DD");
+
+    // Check that all required info is filled in
     if (!machineNumber || !selectedSlot || !selectedDate) {
       Alert.alert('Missing Info', 'Please select machine, date, and time slot.');
       return;
     }
 
     try {
+      // Check if the selected slot is already booked
       const existing = await databases.listDocuments(
         DATABASE_ID,
         COLLECTION_ID,
@@ -81,11 +89,11 @@ const BookingPage = () => {
           Query.equal('selectedSlot', selectedSlot),
         ]
       );
-
       if (existing.documents.length > 0) {
         throw new Error("This time slot has already been booked.");
       }
 
+      // Prevent multiple active bookings within a 7-day period
       const existingFutureBookings = await databases.listDocuments(
         DATABASE_ID,
         COLLECTION_ID,
@@ -94,13 +102,14 @@ const BookingPage = () => {
           Query.between('selectedDate', today, weekAhead),
         ]
       );
-
       if (existingFutureBookings.documents.length > 0) {
         throw new Error("You already have an active booking within the next 7 days. You can only make another booking after that one ends.");
       }
 
+      // Create the booking
       await createBooking(machineNumber, selectedDate, selectedSlot, user.name);
 
+      // Show success message and clear selections
       Alert.alert(
         'Booking Confirmed',
         `User: ${user?.name}\nMachine: ${machineNumber}\nDate: ${selectedDate}\nSlot: ${selectedSlot}`
@@ -110,6 +119,7 @@ const BookingPage = () => {
       setSelectedSlot("");
       setSelectedDate("");
 
+      // Redirect to schedule page
       router.push('./bookingschedule');
     } catch (error) {
       Alert.alert("Booking Failed", error.message);
@@ -119,7 +129,7 @@ const BookingPage = () => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={styles.safeArea}>
-        {/* Back Button */}
+        {/* Back button */}
         <Pressable
           style={styles.backButton}
           onPress={() => router.push('./bookingschedule')}
@@ -131,6 +141,7 @@ const BookingPage = () => {
         <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
           <Text style={styles.title}>Make a Booking</Text>
 
+          {/* Display current user's name */}
           <Text style={styles.label}>Username</Text>
           <TextInput
             value={user?.name || ''}
@@ -138,6 +149,7 @@ const BookingPage = () => {
             style={[styles.input, { backgroundColor: '#f0f0f0', color: '#999' }]}
           />
 
+          {/* Select a washing machine */}
           <Text style={styles.label}>Select Machine</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.horizontalScroll}>
             {machines.map((machine) => (
@@ -161,6 +173,7 @@ const BookingPage = () => {
             ))}
           </ScrollView>
 
+          {/* Select a day */}
           <Text style={styles.label}>Select Day</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.horizontalScroll}>
             {daysOfWeek.map((day) => (
@@ -184,6 +197,7 @@ const BookingPage = () => {
             ))}
           </ScrollView>
 
+          {/* Select a time slot */}
           <Text style={styles.label}>Select Time Slot</Text>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.horizontalScroll}>
             {timeSlots.map((slot) => {
@@ -196,10 +210,10 @@ const BookingPage = () => {
                   style={[
                     styles.slotButton,
                     isBooked
-                      ? { backgroundColor: '#E74C3C' }
+                      ? { backgroundColor: '#E74C3C' } // Red if already booked
                       : isSelected
-                        ? styles.selectedSlot
-                        : { backgroundColor: '#2ECC71' }
+                        ? styles.selectedSlot // Orange if selected
+                        : { backgroundColor: '#2ECC71' } // Green if available
                   ]}
                 >
                   <Text
@@ -215,6 +229,7 @@ const BookingPage = () => {
             })}
           </ScrollView>
 
+          {/* Book Now button */}
           <Pressable style={styles.bookButton} onPress={handleBooking}>
             <Text style={styles.buttonText}>Book Now</Text>
           </Pressable>
@@ -226,78 +241,3 @@ const BookingPage = () => {
 
 export default BookingPage;
 
-const styles = StyleSheet.create({
-  safeArea: {
-    flex: 1,
-    backgroundColor: '#FAF3DD',
-  },
-  backButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingTop: 12,
-  },
-  backText: {
-    marginLeft: 6,
-    fontSize: 16,
-    color: '#FF6B35',
-    fontWeight: '500',
-  },
-  container: {
-    paddingHorizontal: 24,
-    paddingBottom: 40,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: '700',
-    color: '#333',
-    marginVertical: 20,
-    alignSelf: 'center',
-  },
-  label: {
-    fontSize: 16,
-    color: '#333',
-    marginBottom: 8,
-    marginTop: 12,
-  },
-  input: {
-    width: '100%',
-    borderWidth: 1,
-    borderColor: '#ccc',
-    padding: 14,
-    borderRadius: 10,
-    fontSize: 16,
-    marginBottom: 10,
-  },
-  horizontalScroll: {
-    marginBottom: 16,
-  },
-  slotButton: {
-    backgroundColor: '#ccc',
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    borderRadius: 10,
-    marginRight: 10,
-    minWidth: 100,
-    alignItems: 'center',
-  },
-  selectedSlot: {
-    backgroundColor: '#FF8C42',
-  },
-  bookButton: {
-    backgroundColor: '#FF6B35',
-    padding: 14,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginTop: 24,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
-  },
-  buttonText: {
-    color: '#fff',
-    fontWeight: '600',
-    fontSize: 16,
-  },
-});

@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import dayjs from 'dayjs';
 
+// different time slots given to users to book the machines
 const timeSlots = [
   '08:00 - 09:00', '09:00 - 10:00', '10:00 - 11:00', '11:00 - 12:00',
   '12:00 - 13:00', '13:00 - 14:00', '14:00 - 15:00', '15:00 - 16:00',
@@ -12,8 +13,10 @@ const timeSlots = [
   '20:00 - 21:00','21:00 - 22:00','22:00 - 23:00','23:00 - 24:00',
 ];
 
+// machines available at Helix House
 const machineList = ['M1', 'M2', 'M3', 'M4', 'M5', 'M6', 'M7'];
 
+// number of days in advance to enable users to book the washing machines
 const next7Days = Array.from({ length: 7 }, (_, i) =>
   dayjs().add(i, 'day').format('YYYY-MM-DD')
 );
