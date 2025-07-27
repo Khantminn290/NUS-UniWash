@@ -3,6 +3,7 @@ import { databases, client } from "../lib/appwrite";
 import { ID, Permission, Query, Role } from "react-native-appwrite";
 import { useUser } from "../hooks/useUser";
 
+// Constants for Appwrite database and collection IDs
 const DATABASE_ID = "6843fa14001fa0d2b7e6"
 const COLLECTION_ID = "6843fa25003cb5d52a58"
 
