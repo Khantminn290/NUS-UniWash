@@ -5,11 +5,13 @@ import { useAdminBooking } from '../hooks/useAdminBooking';
 import { router } from 'expo-router';
 import dayjs from 'dayjs';
 
+// Mock hooks and router
 jest.mock('../hooks/useAdminBooking');
 jest.mock('expo-router', () => ({
   router: { push: jest.fn() },
 }));
 
+// Mock booking data for today
 const mockBookings = [
   {
     $id: '1',
@@ -21,11 +23,13 @@ const mockBookings = [
 ];
 
 describe('BookingSchedule Component', () => {
+  // Reset mocks before each test
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it('renders header with title and create booking button', () => {
+  // 1. Render header title and Create Booking button
+  it('1. renders header with title and create booking button', () => {
     useAdminBooking.mockReturnValue({ booking: [] });
 
     const { getByText } = render(<BookingSchedule />);
@@ -33,7 +37,8 @@ describe('BookingSchedule Component', () => {
     expect(getByText('Create Booking')).toBeTruthy();
   });
 
-  it('highlights selected date correctly', () => {
+  // 2. Selected date is visually highlighted (bold)
+  it('2. highlights selected date correctly', () => {
     useAdminBooking.mockReturnValue({ booking: [] });
 
     const todayFormatted = dayjs().format('ddd, MMM D');
@@ -49,14 +54,16 @@ describe('BookingSchedule Component', () => {
     expect(isHighlighted).toBe(true);
   });
 
-  it('shows "Available" when no booking exists for that slot', () => {
+  // 3. All empty slots should show "Available"
+  it('3. shows "Available" when no booking exists for that slot', () => {
     useAdminBooking.mockReturnValue({ booking: [] });
 
     const { getAllByText } = render(<BookingSchedule />);
     expect(getAllByText('Available').length).toBeGreaterThan(0);
   });
 
-  it('updates view when a different date is selected', () => {
+  // 4. View updates when another date is pressed
+  it('4. updates view when a different date is selected', () => {
     useAdminBooking.mockReturnValue({ booking: [] });
 
     const { getByText } = render(<BookingSchedule />);
@@ -73,14 +80,16 @@ describe('BookingSchedule Component', () => {
     expect(isHighlighted).toBe(true);
   });
 
-  it('displays user name in booked slot', () => {
+  // 5. Displays user name in booked time slot
+  it('5. displays user name in booked slot', () => {
     useAdminBooking.mockReturnValue({ booking: mockBookings });
 
     const { getByText } = render(<BookingSchedule />);
     expect(getByText('Alice')).toBeTruthy();
   });
 
-  it('navigates to booking page when "Create Booking" is pressed', () => {
+  // 6. Pressing Create Booking navigates to booking page
+  it('6. navigates to booking page when "Create Booking" is pressed', () => {
     useAdminBooking.mockReturnValue({ booking: [] });
 
     const { getByText } = render(<BookingSchedule />);
