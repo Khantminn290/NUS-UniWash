@@ -6,12 +6,17 @@ import { account } from "../../lib/appwrite";
 
 export default function SignupPage() {
   const router = useRouter();
+
+  // Local state to store user input
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [error, setError] = useState(null);
+
+  // Import register method and user object from context
   const { user, register } = useUser();
 
+  // Function to validate password strength
   function validatePassword(password) {
     const errors = [];
     if (!/[A-Z]/.test(password)) errors.push('one uppercase letter');
@@ -21,31 +26,40 @@ export default function SignupPage() {
     return errors.length ? `Password must contain at least ${errors.join(', ')}.` : null;
   }
 
+  // Handles user registration on submit
   const handleSubmit = async () => {
     setError(null);
+
+    // Only allow NUS email addresses in the format eXXXXXXX@u.nus.edu
     const nusemailRegex = /^e\d{7}@u\.nus\.edu$/;
     if (!nusemailRegex.test(email)) {
       setError('Please enter a valid NUS email address. (e.g., e1234567@u.nus.edu).');
       return;
     }
+
+    // Validate password strength
     const validationError = validatePassword(password);
     if (validationError) {
       setError(validationError);
       return;
     }
+
+    // Try to register user
     try {
       await register(email, password, name);
       console.log('current user is: ', user);
     } catch (error) {
-      setError(error.message);
+      setError(error.message); // Show registration error
     }
   };
 
   return (
+    // Dismiss keyboard when touching outside input fields
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.overlay}>
         <Text style={styles.title}>Create Account</Text>
 
+        {/* Name input */}
         <TextInput
           placeholder="Name"
           placeholderTextColor="#999"
@@ -53,6 +67,8 @@ export default function SignupPage() {
           onChangeText={setName}
           value={name}
         />
+
+        {/* Email input */}
         <TextInput
           placeholder="Email"
           placeholderTextColor="#999"
@@ -60,6 +76,8 @@ export default function SignupPage() {
           onChangeText={setEmail}
           value={email}
         />
+
+        {/* Password input */}
         <TextInput
           placeholder="Password"
           placeholderTextColor="#999"
@@ -69,18 +87,22 @@ export default function SignupPage() {
           style={styles.input}
         />
 
+        {/* Signup button */}
         <Pressable style={styles.button} onPress={handleSubmit} testID='signup-button'>
           <Text style={styles.buttonText}>Create Account</Text>
         </Pressable>
 
+        {/* Error message display */}
         <View style={{ width: '100%', height: 60 }}>
           {error && <Text style={styles.error}>{error}</Text>}
         </View>
 
+        {/* Navigation to start page */}
         <Pressable style={styles.loginButton} onPress={() => router.push('/')}>
           <Text style={styles.loginText}>← Back to Start</Text>
         </Pressable>
 
+        {/* Navigation to login page */}
         <Pressable style={styles.loginButton} onPress={() => router.push('/loginpage')}>
           <Text style={styles.loginText}>Already have an account? Log in</Text>
         </Pressable>
@@ -89,6 +111,7 @@ export default function SignupPage() {
   );
 }
 
+// Styles for the SignupPage screen
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,

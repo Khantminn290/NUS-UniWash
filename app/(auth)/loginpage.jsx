@@ -4,15 +4,18 @@ import { useState} from 'react';
 import { useUser } from '../../hooks/useUser';
 
 export default function LoginPage() {
-  const router = useRouter();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState(null);
+  const router = useRouter(); // Used for navigating between screens
+  const [email, setEmail] = useState(''); // State for storing user email input
+  const [password, setPassword] = useState(''); // State for storing password input
+  const [error, setError] = useState(null); // State for error messages
 
-  const {login} = useUser();
+  const {login} = useUser(); // Custom hook to access login function from context
 
+  // Function to handle form submission
   const handleSubmit = async () => {
-    setError(null);
+    setError(null); // Clear any existing errors
+
+    // Basic email format validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setError('Please enter a valid email address.');
@@ -20,17 +23,21 @@ export default function LoginPage() {
     }
 
     try {
+      // Attempt to log in with entered credentials
       await login(email, password);
     } catch (error) {
+      // Catch and display any login errors
       setError(error.message);
     }
   };
 
   return (
+    // Dismiss keyboard when tapping outside inputs
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.overlay}>
         <Text style={styles.title}>Welcome Back</Text>
 
+        {/* Email Input Field */}
         <TextInput 
           placeholder="Email" 
           placeholderTextColor="#999"
@@ -39,6 +46,7 @@ export default function LoginPage() {
           value={email} 
         />
 
+        {/* Password Input Field */}
         <TextInput 
           placeholder="Password"
           placeholderTextColor="#999"
@@ -48,18 +56,22 @@ export default function LoginPage() {
           style={styles.input}
         />
 
+        {/* Login Button */}
         <Pressable style={styles.button} onPress={handleSubmit}>
           <Text style={styles.buttonText}>Log In</Text>
         </Pressable>
 
+        {/* Error Message Display */}
         <View style={{ width: '100%', height: 60 }}>
           {error && <Text style={styles.error}>{error}</Text>}
         </View>
 
+        {/* Navigation Back to Start Page */}
         <Pressable style={styles.registerButton} onPress={() => router.push('/')}>
           <Text style={styles.registerText}>← Back To Start</Text>
         </Pressable>
 
+        {/* Navigation to Registration Page */}
         <Pressable style={styles.registerButton} onPress={() => router.push('/signuppage')}>
           <Text style={styles.registerText}>Register Instead</Text>
         </Pressable>
@@ -67,7 +79,8 @@ export default function LoginPage() {
     </TouchableWithoutFeedback>
   );
 }
-//hello
+
+// Styling for the Login Page
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
