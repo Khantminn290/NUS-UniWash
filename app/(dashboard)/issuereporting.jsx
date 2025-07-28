@@ -136,3 +136,111 @@ const IssueReporting = () => {
 };
 
 export default IssueReporting;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#FAF3DD',
+  },
+  header: {
+    padding: 10,
+    backgroundColor: '#FF6B35',
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: '700',
+    color: 'white',
+    textAlign: 'center',
+  },
+  formContainer: {
+    padding: 16,
+  },
+  flatListStyle: {
+    flex: 1,
+  },
+  flatListContainer: {
+    paddingHorizontal: 16,
+    paddingBottom: 20,
+    flexGrow: 1,
+  },
+  label: {
+    fontSize: 16,
+    color: '#333',
+    marginBottom: 8,
+  },
+  textInput: {
+    width: '100%',
+    height: 120,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    padding: 14,
+    borderRadius: 10,
+    fontSize: 16,
+    marginBottom: 10,
+    backgroundColor: '#f9f9f9',
+    textAlignVertical: 'top',
+  },
+  submitButton: {
+    backgroundColor: '#FF6B35',
+    padding: 14,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginTop: 12,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: '600',
+    fontSize: 16,
+  },
+  sectionTitle: {
+    fontSize: 22,
+    fontWeight: '700',
+    color: '#333',
+    marginTop: 30,
+    marginBottom: 16,
+  },
+  issueItem: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    padding: 14,
+    borderRadius: 10,
+    marginBottom: 10,
+    backgroundColor: '#f9f9f9',
+    position: 'relative',
+  },
+  issueUserName: {
+    fontWeight: '600',
+    marginBottom: 4,
+  },
+  issueDescription: {
+    color: '#333',
+  },
+  issueDate: {
+    fontSize: 12,
+    color: '#888',
+    marginTop: 6,
+  },
+  noIssuesText: {
+    textAlign: 'center',
+    color: '#777',
+    marginTop: 20,
+  },
+  deleteButton: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    backgroundColor: '#E74C3C',
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    borderRadius: 6,
+  },
+  deleteButtonText: {
+    color: '#fff',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+});

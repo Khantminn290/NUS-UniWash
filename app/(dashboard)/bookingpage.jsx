@@ -241,3 +241,79 @@ const BookingPage = () => {
 
 export default BookingPage;
 
+const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#FAF3DD',
+  },
+  backButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingTop: 12,
+  },
+  backText: {
+    marginLeft: 6,
+    fontSize: 16,
+    color: '#FF6B35',
+    fontWeight: '500',
+  },
+  container: {
+    paddingHorizontal: 24,
+    paddingBottom: 40,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: '700',
+    color: '#333',
+    marginVertical: 20,
+    alignSelf: 'center',
+  },
+  label: {
+    fontSize: 16,
+    color: '#333',
+    marginBottom: 8,
+    marginTop: 12,
+  },
+  input: {
+    width: '100%',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    padding: 14,
+    borderRadius: 10,
+    fontSize: 16,
+    marginBottom: 10,
+  },
+  horizontalScroll: {
+    marginBottom: 16,
+  },
+  slotButton: {
+    backgroundColor: '#ccc',
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    borderRadius: 10,
+    marginRight: 10,
+    minWidth: 100,
+    alignItems: 'center',
+  },
+  selectedSlot: {
+    backgroundColor: '#FF8C42',
+  },
+  bookButton: {
+    backgroundColor: '#FF6B35',
+    padding: 14,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginTop: 24,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: '600',
+    fontSize: 16,
+  },
+});
+
