@@ -9,20 +9,22 @@ import dayjs from 'dayjs';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 
 const ProfilePage = () => {
-  const { logout, user } = useUser();
-  const [activeBooking, setActiveBooking] = useState(null);
-  const [timeLeft, setTimeLeft] = useState(null);
-  const [bookingDuration, setBookingDuration] = useState(3600); // default to 1 hour
+  const { logout, user } = useUser(); // Get logout function and user info from context
+  const [activeBooking, setActiveBooking] = useState(null); // Store the current booking (if active)
+  const [timeLeft, setTimeLeft] = useState(null); // Countdown time left for active booking
+  const [bookingDuration, setBookingDuration] = useState(3600); // Default booking duration in seconds (1 hour)
 
   useEffect(() => {
+    // Set an interval to check for active bookings every second
     const interval = setInterval(async () => {
       try {
-        const today = dayjs().format('YYYY-MM-DD');
-        const now = dayjs();
+        const today = dayjs().format('YYYY-MM-DD'); // Current date
+        const now = dayjs(); // Current time
 
+        // Fetch all bookings for the current user on today's date
         const response = await databases.listDocuments(
-          "6843fa14001fa0d2b7e6",
-          "6843fa25003cb5d52a58",
+          "6843fa14001fa0d2b7e6", // Database ID
+          "6843fa25003cb5d52a58", // Collection ID
           [
             Query.equal('userId', user.$id),
             Query.equal('selectedDate', today)
@@ -32,6 +34,7 @@ const ProfilePage = () => {
         const bookingsToday = response.documents;
         let foundBooking = null;
 
+        // Loop through bookings to find one currently active
         for (let booking of bookingsToday) {
           if (!booking.selectedSlot) continue;
 
@@ -39,10 +42,11 @@ const ProfilePage = () => {
           const startTime = dayjs(`${today}T${start}:00`);
           const endTime = dayjs(`${today}T${end}:00`);
 
+          // If now is between booking time
           if (now.isAfter(startTime) && now.isBefore(endTime)) {
             foundBooking = booking;
-            const duration = endTime.diff(startTime, 'second');
-            const diff = endTime.diff(now, 'second');
+            const duration = endTime.diff(startTime, 'second'); // Calculate total duration
+            const diff = endTime.diff(now, 'second'); // Calculate remaining time
             setTimeLeft(diff);
             setBookingDuration(duration);
             break;
@@ -50,15 +54,16 @@ const ProfilePage = () => {
         }
 
         setActiveBooking(foundBooking);
-        if (!foundBooking) setTimeLeft(null);
+        if (!foundBooking) setTimeLeft(null); // Reset if no booking found
       } catch (error) {
         console.error('Error fetching bookings:', error);
       }
-    }, 1000);
+    }, 1000); // Repeat every second
 
-    return () => clearInterval(interval);
+    return () => clearInterval(interval); // Clear interval on component unmount
   }, [user]);
 
+  // Helper to format seconds to MM:SS
   const formatTimeLeft = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
@@ -67,7 +72,7 @@ const ProfilePage = () => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      {/* Logout Button */}
+      {/* Header section with logout button */}
       <View style={styles.header}>
         <TouchableOpacity style={styles.logoutWrapper} onPress={logout}>
           <Ionicons name="log-out-outline" size={24} color="#FF6B35" />
@@ -75,20 +80,20 @@ const ProfilePage = () => {
         </TouchableOpacity>
       </View>
 
-      {/* Profile Info */}
+      {/* Display user's profile info */}
       <View style={styles.profileContainer}>
         <Ionicons name="person-circle-outline" size={100} color="#FFA552" />
         <Text style={styles.name}>{user.name}</Text>
         <Text style={styles.email}>{user.email}</Text>
       </View>
 
-      {/* Countdown Timer */}
+      {/* Display countdown timer only if a booking is active */}
       {activeBooking && timeLeft > 0 && (
         <View style={styles.circularWrapper}>
           <AnimatedCircularProgress
             size={160}
             width={12}
-            fill={(timeLeft / bookingDuration) * 100}
+            fill={(timeLeft / bookingDuration) * 100} // Progress percentage
             tintColor="#FF6B35"
             backgroundColor="#FFE4C9"
             rotation={0}
@@ -108,10 +113,11 @@ const ProfilePage = () => {
         </View>
       )}
 
-      {/* Actions */}
+      {/* Action buttons for navigation */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>My Account</Text>
 
+        {/* Navigate to update particulars page */}
         <TouchableOpacity
           style={styles.actionButton}
           onPress={() => router.push('./updateparticulars')}
@@ -120,6 +126,7 @@ const ProfilePage = () => {
           <Text style={styles.buttonText}>Update Particulars</Text>
         </TouchableOpacity>
 
+        {/* Navigate to view booking summary */}
         <TouchableOpacity
           style={styles.actionButton}
           onPress={() => router.push('./userbookingsummary')}
@@ -134,6 +141,7 @@ const ProfilePage = () => {
 
 export default ProfilePage;
 
+// Style definitions
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,

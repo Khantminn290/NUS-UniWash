@@ -6,8 +6,9 @@ import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 
 const UserBookingSummary = () => {
-  const { booking, deleteBooking } = useBooking();
+  const { booking, deleteBooking } = useBooking(); // Fetch user's booking data and delete function from custom hook
 
+  // Function to handle delete confirmation and perform delete if confirmed
   const handleDelete = (id) => {
     Alert.alert(
       "Cancel Booking",
@@ -17,7 +18,7 @@ const UserBookingSummary = () => {
         {
           text: "Delete",
           style: "destructive",
-          onPress: () => deleteBooking(id),
+          onPress: () => deleteBooking(id), // Trigger delete if confirmed
         },
       ]
     );
@@ -31,20 +32,25 @@ const UserBookingSummary = () => {
         <Text style={styles.backText}>Back</Text>
       </Pressable>
 
+      {/* Page Title */}
       <Text style={styles.title}>My Booking Summary</Text>
 
+      {/* List of Bookings */}
       <FlatList
-        data={booking}
-        keyExtractor={(item) => item.$id}
+        data={booking} // Booking data
+        keyExtractor={(item) => item.$id} // Unique key for each item
         contentContainerStyle={styles.list}
-        ListEmptyComponent={<Text style={styles.emptyText}>No bookings yet.</Text>}
+        ListEmptyComponent={<Text style={styles.emptyText}>No bookings yet.</Text>} // Message when list is empty
         renderItem={({ item }) => (
           <View style={styles.card}>
+            {/* Booking Details */}
             <View style={styles.cardTextContainer}>
               <Text style={styles.cardText}>Machine: {item.machineNumber}</Text>
               <Text style={styles.cardText}>Date: {item.selectedDate}</Text>
               <Text style={styles.cardText}>Time Slot: {item.selectedSlot}</Text>
             </View>
+
+            {/* Delete Button */}
             <Pressable testID={`delete-button-${item.$id}`} onPress={() => handleDelete(item.$id)}>
               <Ionicons name="trash" size={24} color="#FF6B35" />
             </Pressable>
@@ -57,10 +63,11 @@ const UserBookingSummary = () => {
 
 export default UserBookingSummary;
 
+// Styles for the screen and its components
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#FFF5E1',
+    backgroundColor: '#FFF5E1', // Cream background
   },
   backButton: {
     flexDirection: 'row',

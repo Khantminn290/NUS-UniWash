@@ -15,27 +15,29 @@ import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 
 const UpdateParticulars = () => {
-  const { user, changeUserName } = useUser();
-  const [name, setName] = useState(user.name || '');
+  const { user, changeUserName } = useUser(); // Access user info and function to change name
+  const [name, setName] = useState(user.name || ''); // Local state to hold the updated name
 
+  // Function to handle saving the updated name
   const handleSave = async () => {
     if (name.trim() === '') {
-      Alert.alert('Error', 'Name cannot be empty');
+      Alert.alert('Error', 'Name cannot be empty'); // Show error if name is empty
       return;
     }
     try {
-      await changeUserName(name.trim());
-      Alert.alert('Success', 'Name updated successfully');
+      await changeUserName(name.trim()); // Update name via hook
+      Alert.alert('Success', 'Name updated successfully'); // Show success message
     } catch (error) {
-      Alert.alert('Error', 'Something went wrong while updating');
+      Alert.alert('Error', 'Something went wrong while updating'); // Error handling
     }
   };
 
   return (
+    // Dismiss keyboard when tapping outside input field
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={styles.container}>
         
-        {/* Back Button */}
+        {/* Header with Back Button */}
         <View style={styles.header}>
           <TouchableOpacity onPress={() => router.push('./profilepage')} style={styles.backButton}>
             <Ionicons name="arrow-back" size={24} color="#FF6B35" />
@@ -43,10 +45,11 @@ const UpdateParticulars = () => {
           </TouchableOpacity>
         </View>
 
-        {/* Main Content */}
+        {/* Main Content: Input Field and Save Button */}
         <View style={styles.content}>
           <Text style={styles.title}>Update Your Name</Text>
 
+          {/* Input field for updating name */}
           <TextInput
             placeholder="Enter your name"
             placeholderTextColor="#A86E4F"
@@ -55,6 +58,7 @@ const UpdateParticulars = () => {
             value={name}
           />
 
+          {/* Save Button */}
           <TouchableOpacity style={styles.button} onPress={handleSave}>
             <Text style={styles.buttonText}>Save Changes</Text>
           </TouchableOpacity>
@@ -66,6 +70,7 @@ const UpdateParticulars = () => {
 
 export default UpdateParticulars;
 
+// Styling for the screen components
 const styles = StyleSheet.create({
   container: {
     flex: 1,
