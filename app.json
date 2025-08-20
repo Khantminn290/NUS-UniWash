@@ -3,7 +3,7 @@
     "scheme": "nusuniwash",
     "name": "NusUniWash",
     "slug": "NusUniWash",
-    "version": "1.0.0",
+    "version": "1.0.0", //hello
     "orientation": "portrait",
     "icon": "./assets/logo.png",
     "userInterfaceStyle": "light",
